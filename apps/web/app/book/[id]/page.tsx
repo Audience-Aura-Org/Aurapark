@@ -154,7 +154,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     };
 
     return (
-        <div className="min-h-screen bg-neutral-50 pb-20 safe-bottom-nav">
+        <div className="min-h-screen bg-neutral-50 pb-60 safe-bottom-nav">
             {/* Cinematic Header */}
             <div className="bg-neutral-900 text-white pt-20 pb-6 px-4 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-900/40 to-neutral-900 z-0"></div>
