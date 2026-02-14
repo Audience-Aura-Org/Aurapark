@@ -4,10 +4,11 @@
   "workspaces": [
     "apps/*"
   ],
+  "main": "server.js",
   "dependencies": {
-    "next": "15.1.6",
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "scripts": {
     "build": "npm run build --workspace=@transport-platform/web && cp -r apps/web/.next .next && cp -r apps/web/public public",
