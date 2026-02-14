@@ -10,7 +10,7 @@
     "react-dom": "19.0.0"
   },
   "scripts": {
-    "build": "npm run build --workspace=@transport-platform/web",
+    "build": "npm run build --workspace=@transport-platform/web && cp -r apps/web/.next .next && cp -r apps/web/public public",
     "start": "NODE_ENV=production node server.js",
     "dev": "node server.js"
   }
