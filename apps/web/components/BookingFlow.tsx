@@ -85,7 +85,7 @@ export default function BookingFlow({ tripId, onBookingComplete }: BookingFlowPr
     if (!trip) return <div className="text-white text-center py-8">Loading trip...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto safe-bottom-nav">
             {step === 1 && (
                 <div className="space-y-6">
                     <div className="glass p-6">

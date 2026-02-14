@@ -72,7 +72,7 @@ export function Input({
 
                 {/* Left Icon */}
                 {leftIcon && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 z-20">
                         {leftIcon}
                     </div>
                 )}
@@ -104,7 +104,7 @@ export function Input({
                 />
 
                 {/* Right Icon / Status Icon */}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20">
                     {error ? (
                         <svg className="w-5 h-5 text-danger-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
