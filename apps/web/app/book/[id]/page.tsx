@@ -129,8 +129,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     const totalPrice = trip.basePrice * selectedSeats.length;
     const driver = trip.driverId || { name: 'Assigned at Station', phone: '---' };
 
-    // Flexible helper to get location names
-    // Extract Origin and Destination from Route Name (Pattern: "City A - City B")
     const getOrigin = () => {
         if (trip.routeId?.routeName) return trip.routeId.routeName.split('-')[0].trim();
         return 'Origin';
@@ -147,7 +145,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     const origin = getOrigin();
     const destination = getDestination();
 
-    // Stops label should show INTERIM stops or "Direct Route"
     const getStopsLabel = () => {
         const interimStops = trip.routeId?.stops?.map((s: any) => s.name || s) || [];
         if (interimStops.length > 0) {
@@ -158,18 +155,16 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
     return (
         <div className="min-h-screen bg-neutral-50 pb-20 safe-bottom-nav">
-            {/* Cinematic Header - COMPACT VERSION */}
+            {/* Cinematic Header */}
             <div className="bg-neutral-900 text-white pt-20 pb-6 px-4 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-900/40 to-neutral-900 z-0"></div>
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col gap-2">
-                        {/* Compact Breadcrumb/Back */}
                         <Link href="/search" className="inline-flex items-center text-[10px] font-semibold text-neutral-400 hover:text-white uppercase tracking-widest">
                             <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                             Back to Search
                         </Link>
 
-                        {/* Bus Stops Badge (Was Assigned Route) */}
                         <div className="bg-primary-500/10 border border-primary-500/20 px-3 py-2 rounded-lg mt-2 self-start">
                             <div className="text-[9px] font-bold text-primary-400 uppercase tracking-widest mb-1">Bus Stops</div>
                             <div className="text-xs font-bold text-primary-50 uppercase truncate leading-tight">
@@ -177,8 +172,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                             </div>
                         </div>
 
-                        {/* Route - Significantly Smaller on Mobile */}
-                        {/* Route - Arrival/Departure High Density */}
                         <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 mt-4">
                             <div className="space-y-1">
                                 <div className="text-[10px] font-black text-primary-400 uppercase tracking-[0.2em] leading-none mb-1">Departure</div>
@@ -204,7 +197,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                 </div>
             </div>
 
-            {/* Mobile Sticky Trip Summary Bar - Fixed z-index and spacing */}
+            {/* Mobile Sticky Trip Summary Bar */}
             <div className="lg:hidden sticky top-[57px] z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200 px-4 py-2.5 shadow-sm">
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col">
@@ -227,14 +220,11 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
             <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6 relative z-10 text-sm">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
                     {/* LEFT COLUMN: Main Content */}
                     <div className="lg:col-span-8 order-2 lg:order-1">
-
                         {/* Trip Details Card */}
                         <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-4 mb-6">
                             <h3 className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-3">Trip Details</h3>
-
                             <div className="grid grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <div className="text-[10px] uppercase font-semibold text-neutral-400">Bus Number</div>
@@ -245,7 +235,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                     <div className="font-semibold text-neutral-900">{trip.busId?.model || 'Standard Unit'} • {trip.busId?.type || 'Standard'}</div>
                                 </div>
                             </div>
-
                             <div className="mb-4">
                                 <div className="text-[10px] uppercase font-semibold text-neutral-400 mb-1">Amenities</div>
                                 <div className="flex flex-wrap gap-2">
@@ -258,7 +247,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                     )}
                                 </div>
                             </div>
-
                             <div className="flex items-center gap-3 pt-3 border-t border-neutral-100">
                                 <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center">👨‍✈️</div>
                                 <div>
@@ -281,24 +269,18 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
                                 <div className="p-6 bg-neutral-50 flex justify-center overflow-x-auto min-h-[300px]">
                                     <div className={`bg-white rounded-[2rem] px-5 py-8 shadow-xl border border-neutral-200 relative ${trip?.busId?.seatMap?.columns === 5 ? 'w-[280px]' : 'w-[240px]'} flex-shrink-0 transition-all`}>
-                                        {/* Driver - Moved to Left per User Request */}
                                         <div className="absolute top-5 left-5 w-8 h-8 rounded-full border-2 border-neutral-200 flex items-center justify-center">
                                             <div className="w-4 h-0.5 bg-neutral-300 rotate-45"></div>
                                         </div>
-
                                         <div className="text-[10px] font-bold text-neutral-300 uppercase text-center mb-6 tracking-widest">Front</div>
-
                                         <div className={`grid gap-2 ${trip?.busId?.seatMap?.columns === 5 ? 'grid-cols-5' : 'grid-cols-4'}`}>
                                             {seats.map((seat: any, i: number) => {
                                                 const isAvailable = trip?.availableSeats?.includes(seat.seatNumber) ?? true;
                                                 const isSelected = selectedSeats.includes(seat.seatNumber);
-
-                                                // Dynamic Aisle Logic: Triple seats (3) on the left
                                                 const seatsPerRow = trip?.busId?.seatMap?.columns || 4;
                                                 const seatIndexInRow = i % seatsPerRow;
                                                 const aislePosition = seatsPerRow === 5 ? 2 : 1;
                                                 const isAisle = (seatIndexInRow === aislePosition);
-
                                                 return (
                                                     <div key={seat.seatNumber} className={isAisle ? 'mr-3' : ''}>
                                                         <button
@@ -352,7 +334,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                             </div>
                                         </div>
                                     ))}
-
                                     <div className="pt-4 border-t border-neutral-100 mt-4">
                                         <h3 className="text-sm font-bold text-neutral-900 mb-3">Contact Info</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -360,8 +341,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                             <Input label="Phone" type="tel" placeholder="Phone number" value={contactInfo.phone} className="border-2 border-neutral-300" onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })} />
                                         </div>
                                     </div>
-
-                                    {/* Reserve & Pay on Site - Future Payment Hook Space */}
                                     <div className="mt-8 p-6 bg-primary-50 border-2 border-dashed border-primary-200 rounded-2xl">
                                         <div className="flex items-start gap-4">
                                             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">💳</div>
@@ -395,13 +374,11 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                 <p className="text-neutral-500 mb-8 max-w-sm mx-auto">
                                     Your seats are held. A confirmation email has been sent to <span className="font-bold text-neutral-900">{contactInfo.email}</span>.
                                 </p>
-
                                 <div className="bg-neutral-50 rounded-2xl p-6 mb-8 border border-neutral-100">
                                     <div className="text-xs font-black text-neutral-400 uppercase tracking-widest mb-2">Next Step</div>
                                     <div className="text-lg font-black text-neutral-900">Pay XAF {totalPrice} at the station</div>
                                     <p className="text-xs text-neutral-500 mt-2">Please arrive 15 minutes before departure.</p>
                                 </div>
-
                                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                     <Button variant="glass" onClick={() => window.print()}>Print Ticket</Button>
                                     <Link href="/"><Button variant="primary">Return Home</Button></Link>
@@ -414,7 +391,6 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                     <div className="lg:col-span-4 space-y-4 order-1 lg:order-2 hidden lg:block sticky top-24">
                         <div className="bg-white rounded-2xl shadow-lg border border-neutral-100 p-5">
                             <h3 className="text-xs font-black text-neutral-400 uppercase tracking-widest mb-4">Trip Details</h3>
-
                             <div className="flex gap-3 mb-6">
                                 <div className="flex flex-col items-center pt-1">
                                     <div className="w-2 h-2 bg-neutral-900 rounded-full"></div>
@@ -436,9 +412,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                                     </div>
                                 </div>
                             </div>
-
                             <div className="h-px bg-neutral-100 mb-4"></div>
-
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-lg">👨‍✈️</div>
                                 <div>
@@ -462,6 +436,27 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Sticky Checkout Bar */}
+            {step === 'SELECT_SEATS' && (
+                <div className="lg:hidden fixed bottom-28 left-0 right-0 z-[100] px-4 animate-in slide-in-from-bottom-5 duration-300">
+                    <div className="bg-neutral-900/90 backdrop-blur-xl rounded-2xl p-5 shadow-2xl border border-white/10 flex items-center justify-between gap-4">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest leading-none mb-1">Total Amount</span>
+                            <span className="font-black text-white text-xl">XAF {totalPrice || trip.basePrice}</span>
+                        </div>
+                        <Button
+                            variant="primary"
+                            size="lg"
+                            className="flex-1 max-w-[170px] h-14 text-sm font-black uppercase tracking-wider shadow-xl shadow-primary-500/20"
+                            onClick={handleReserve}
+                            disabled={selectedSeats.length === 0}
+                        >
+                            Checkout →
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             <style jsx global>{`
                 @keyframes fade-in-up {
