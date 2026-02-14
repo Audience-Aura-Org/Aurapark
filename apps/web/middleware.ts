@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/request';
+import { NextResponse, NextRequest } from 'next/server';
 import * as jose from 'jose';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this';
