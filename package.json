@@ -4,11 +4,14 @@
   "workspaces": [
     "apps/*"
   ],
+  "dependencies": {
+    "next": "15.1.6",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
   "scripts": {
     "build": "npm run build --workspace=@transport-platform/web",
-    "start": "npm run start --workspace=@transport-platform/web",
-    "dev": "npm run dev --workspace=@transport-platform/web",
-    "build:web": "npm run build --workspace=@transport-platform/web",
-    "dev:web": "npm run dev --workspace=@transport-platform/web"
+    "start": "NODE_ENV=production node server.js",
+    "dev": "node server.js"
   }
 }
