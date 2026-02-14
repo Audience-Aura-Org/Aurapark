@@ -1,0 +1,34 @@
+// MongoDB Shell Script to Delete Trips with "Unknown" Destination
+// Run this in MongoDB Compass or mongosh
+
+// Step 1: Find all trips with routes containing "Unknown"
+db.trips.find({}).forEach(function(trip) {
+    // Get the route for this trip
+    var route = db.routes.findOne({ _id: trip.routeId });
+    
+    if (route && route.routeName && route.routeName.includes('Unknown')) {
+        print('Deleting trip: ' + trip._id + ' - Route: ' + route.routeName);
+        db.trips.deleteOne({ _id: trip._id });
+    }
+});
+
+// Step 2: Find trips where stops contain "Unknown"
+db.trips.find({}).forEach(function(trip) {
+    if (trip.stops && trip.stops.length > 0) {
+        var hasUnknown = false;
+        
+        trip.stops.forEach(function(stopId) {
+            var stop = db.stops.findOne({ _id: stopId });
+            if (stop && stop.name && (stop.name === 'Unknown' || stop.name.includes('Unknown'))) {
+                hasUnknown = true;
+            }
+        });
+        
+        if (hasUnknown) {
+            print('Deleting trip: ' + trip._id + ' - Has Unknown stop');
+            db.trips.deleteOne({ _id: trip._id });
+        }
+    }
+});
+
+print('✅ Cleanup complete!');

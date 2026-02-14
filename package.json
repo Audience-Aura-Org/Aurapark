@@ -1,0 +1,11 @@
+{
+  "name": "transport-platform-root",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=@transport-platform/web",
+    "build:web": "npm run build --workspace=@transport-platform/web"
+  }
+}
