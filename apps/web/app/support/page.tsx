@@ -9,8 +9,10 @@ import { Sidebar } from '@/components/Sidebar';
 import { useSidebar } from '@/components/SidebarProvider';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { useAuth } from '@/components/AuthProvider';
 
 function SupportForm() {
+    const { user } = useAuth();
     const searchParams = useSearchParams();
     const pnr = searchParams.get('pnr');
     const tracking = searchParams.get('tracking');
@@ -18,11 +20,17 @@ function SupportForm() {
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
-        email: '',
+        email: user?.email || '',
         subject: pnr ? 'BOOKING ANOMALY' : tracking ? 'LOGISTICAL DELAY' : 'GENERAL INQUIRY',
         priority: 'ROUTINE',
         message: pnr ? `Encountered problem with PNR: ${pnr}` : tracking ? `Investigation requested for Tracking ID: ${tracking}` : ''
     });
+
+    useEffect(() => {
+        if (user?.email && !formData.email) {
+            setFormData(prev => ({ ...prev, email: user.email }));
+        }
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,12 +132,13 @@ function SupportForm() {
 
 export default function PassengerSupportPage() {
     const { isCollapsed } = useSidebar();
+    const { user } = useAuth();
 
     return (
         <div className="min-h-screen bg-mesh-green">
-            <Sidebar />
-            <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-20 safe-bottom-nav ${isCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>
-                <div className="max-w-[1400px] p-4 md:p-8 space-y-8">
+            {user && <Sidebar />}
+            <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-20 safe-bottom-nav ${user ? (isCollapsed ? 'lg:pl-20' : 'lg:pl-72') : ''}`}>
+                <div className="max-w-[1400px] p-4 md:p-8 mx-auto space-y-8">
                     <PageHeader
                         title="Mission Support Control"
                         subtitle="Direct communication channel for operational assistance and service inquiries"
@@ -143,21 +152,23 @@ export default function PassengerSupportPage() {
                                 <SupportForm />
                             </Suspense>
 
-                            <div className="glass-panel p-8">
-                                <h3 className="text-sm font-semibold text-neutral-400 mb-6">Recent tickets</h3>
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-white/40 border border-neutral-50 rounded-xl flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></div>
-                                            <div>
-                                                <div className="text-sm font-black text-neutral-900">CASE #88219 - Ticket Modification</div>
-                                                <div className="text-[10px] font-medium text-neutral-400">2h ago</div>
+                            {user && (
+                                <div className="glass-panel p-8">
+                                    <h3 className="text-sm font-semibold text-neutral-400 mb-6">Recent tickets</h3>
+                                    <div className="space-y-4">
+                                        <div className="p-4 bg-white/40 border border-neutral-50 rounded-xl flex items-center justify-between">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></div>
+                                                <div>
+                                                    <div className="text-sm font-black text-neutral-900">CASE #88219 - Ticket Modification</div>
+                                                    <div className="text-[10px] font-medium text-neutral-400">2h ago</div>
+                                                </div>
                                             </div>
+                                            <Badge variant="success" size="sm">RESOLVED</Badge>
                                         </div>
-                                        <Badge variant="success" size="sm">RESOLVED</Badge>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {/* Sidebar Info */}

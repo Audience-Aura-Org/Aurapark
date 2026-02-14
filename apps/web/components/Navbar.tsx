@@ -36,14 +36,12 @@ export default function Navbar() {
             { label: 'Book', href: '/' },
             { label: 'Browse Trips', href: '/trips' },
             { label: 'Track', href: '/tracking' },
-            { label: 'Financial', href: '/financial' },
             { label: 'Support', href: '/support' },
         ],
         PASSENGER: [
             { label: 'Book', href: '/' },
             { label: 'Track', href: '/tracking' },
             { label: 'My Orders', href: '/orders' },
-            { label: 'Financial', href: '/financial' },
             { label: 'Support', href: '/support' },
         ],
         AGENCY_STAFF: [
