@@ -1,19 +1,24 @@
 {
-  "name": "transport-platform-root",
-  "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
+  "name": "aurapark-transport",
+  "version": "1.0.0",
+  "description": "Transport booking platform with Next.js and custom Node.js server",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "npm run build --workspace=@transport-platform/web && mkdir -p .next/static && cp -r apps/web/.next/standalone/node_modules . && cp -r apps/web/.next/standalone/apps/web/.next . && cp -r apps/web/.next/static/. .next/static/ && cp -r apps/web/public/. public/",
+    "postbuild": "echo '✓ Build complete. Start with: npm start'",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
   "dependencies": {
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
-  "scripts": {
-    "build": "npm run build --workspace=@transport-platform/web && mkdir -p .next/static && cp -r apps/web/.next/standalone/node_modules . && cp -r apps/web/.next/standalone/apps/web/.next . && cp -r apps/web/.next/static/. .next/static/ && cp -r apps/web/public/. public/",
-    "build:web": "npm run build",
-    "start": "NODE_ENV=production node server.js",
-    "dev": "node server.js"
-  }
+  "workspaces": [
+    "apps/*"
+  ],
+  "private": true
 }
