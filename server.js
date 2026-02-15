@@ -10,7 +10,7 @@ const app = next({
     dev,
     hostname,
     port,
-    dir: './apps/web'
+    dir: dev ? './apps/web' : './'
 })
 const handle = app.getRequestHandler()
 
