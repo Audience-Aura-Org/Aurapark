@@ -10,34 +10,53 @@ const app = next({
     dev,
     hostname,
     port,
-    dir: dev ? './apps/web' : './'
+    dir: './apps/web'
 })
 const handle = app.getRequestHandler()
 
-app.prepare().then(() => {
-    createServer(async (req, res) => {
-        try {
-            const parsedUrl = parse(req.url, true)
+console.log(`> Starting server in ${dev ? 'development' : 'production'} mode...`)
+console.log(`> App directory: ./apps/web`)
 
-            // Health check endpoint
-            if (parsedUrl.pathname === '/health') {
-                res.statusCode = 200
-                res.end('System Online')
-                return
+app.prepare()
+    .then(() => {
+        createServer(async (req, res) => {
+            try {
+                const parsedUrl = parse(req.url, true)
+
+                // Health check endpoint
+                if (parsedUrl.pathname === '/health') {
+                    res.statusCode = 200
+                    res.setHeader('Content-Type', 'application/json')
+                    res.end(JSON.stringify({
+                        status: 'System Online',
+                        env: process.env.NODE_ENV,
+                        time: new Date().toISOString()
+                    }))
+                    return
+                }
+
+                await handle(req, res, parsedUrl)
+            } catch (err) {
+                console.error('Error occurred handling', req.url, err)
+                res.statusCode = 500
+                res.end('Internal Server Error')
             }
-
-            await handle(req, res, parsedUrl)
-        } catch (err) {
-            console.error('Error occurred handling', req.url, err)
-            res.statusCode = 500
-            res.end('internal server error')
-        }
+        })
+            .once('error', (err) => {
+                console.error('Server error:', err)
+                process.exit(1)
+            })
+            .listen(port, hostname, () => {
+                console.log(`> Ready on http://${hostname}:${port}`)
+                console.log(`> Platform nodes synchronized. Node.js process: ${process.pid}`)
+            })
     })
-        .once('error', (err) => {
-            console.error(err)
-            process.exit(1)
-        })
-        .listen(port, hostname, () => {
-            console.log(`> Ready on http://${hostname}:${port}`)
-        })
-})
+    .catch((err) => {
+        console.error('FATAL ERROR: Failed to prepare Next.js app', err)
+        // Attempt to start a basic error server to show the error
+        createServer((req, res) => {
+            res.statusCode = 500
+            res.setHeader('Content-Type', 'text/plain')
+            res.end(`FATAL INITIALIZATION ERROR: ${err.message}\n\nCheck server logs for details.`)
+        }).listen(port, hostname)
+    })
