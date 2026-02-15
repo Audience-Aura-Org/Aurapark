@@ -4,6 +4,7 @@ const next = require('next')
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = '0.0.0.0'
+// Render uses PORT=10000 by default, but allow override
 const port = parseInt(process.env.PORT || '3000', 10)
 // when using middleware `hostname` and `port` must be provided below
 const app = next({

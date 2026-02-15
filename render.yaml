@@ -1,0 +1,26 @@
+# Render Configuration
+# This file tells Render how to build and deploy your application
+
+services:
+  - type: web
+    name: aurapark-transport
+    runtime: node
+    region: frankfurt  # Change to your preferred region
+    plan: free  # or 'starter' for $7/month
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # Set this in Render dashboard (sensitive)
+      - key: JWT_SECRET
+        sync: false  # Set this in Render dashboard (sensitive)
+      - key: NEXTAUTH_SECRET
+        sync: false  # Set this in Render dashboard (sensitive)
+      - key: NEXTAUTH_URL
+        value: https://aurapark-transport.onrender.com  # Update after custom domain setup
