@@ -15,7 +15,16 @@ const app = next({
 const handle = app.getRequestHandler()
 
 console.log(`> Starting server in ${dev ? 'development' : 'production'} mode...`)
-console.log(`> App directory: ./apps/web`)
+console.log(`> App directory set to: ${dev ? './apps/web' : './'}`)
+
+if (!dev) {
+    const fs = require('fs');
+    if (!fs.existsSync('./.next')) {
+        console.error('CRITICAL: .next directory not found in root. Build artifacts may be missing.');
+    } else {
+        console.log('--- .next directory verified in root ---');
+    }
+}
 
 app.prepare()
     .then(() => {
