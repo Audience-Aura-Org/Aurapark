@@ -35,7 +35,7 @@ const PassengerSchema = new Schema({
 }, { _id: false });
 
 const BookingSchema: Schema = new Schema({
-    pnr: { type: String, required: true, unique: true },
+    pnr: { type: String, required: true },
     tripId: { type: Schema.Types.ObjectId, ref: 'Trip', required: true },
     agencyId: { type: Schema.Types.ObjectId, ref: 'Agency', required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -56,7 +56,7 @@ const BookingSchema: Schema = new Schema({
 }, { timestamps: true });
 
 // Index for lookup
-BookingSchema.index({ pnr: 1 });
+BookingSchema.index({ pnr: 1 }, { unique: true });
 BookingSchema.index({ userId: 1 });
 BookingSchema.index({ tripId: 1 });
 
