@@ -1,0 +1,28 @@
+# .htaccess for Node.js application on Hostinger
+# Place this file in your public_html directory
+
+PassengerEnabled on
+PassengerAppRoot /home/u177313858/domains/park.audienceaura.org/public_html
+PassengerAppType node
+PassengerStartupFile server.js
+PassengerNodejs /usr/bin/node
+
+# Force HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Passenger configuration for better performance
+PassengerMinInstances 1
+PassengerMaxPoolSize 6
+PassengerPoolIdleTime 0
+PassengerMaxPreloaderIdleTime 0
+
+# Prevent directory listing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

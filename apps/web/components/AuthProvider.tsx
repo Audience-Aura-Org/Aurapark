@@ -34,13 +34,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         refetchUser();
     }, []);
 
-    // Redirect to home if logged out on a role-protected page
+    // Handle auth/role guarding for protected routes
     useEffect(() => {
-        const roleProtectedPaths = ['/agency', '/admin', '/driver', '/profile', '/orders', '/bookings'];
-        const isRolePath = roleProtectedPaths.some(path => pathname.startsWith(path));
+        if (loading || !pathname) return;
 
-        if (!loading && !user && isRolePath) {
+        const path = pathname;
+        const roleProtectedPaths = ['/agency', '/admin', '/driver', '/profile', '/orders', '/bookings'];
+        const isRolePath = roleProtectedPaths.some(p => path.startsWith(p));
+
+        // If not logged in and trying to access a protected area, send home
+        if (!user && isRolePath) {
             router.push('/');
+            return;
+        }
+
+        // If logged in, enforce basic role-to-area mapping
+        if (user) {
+            const role = user.role;
+
+            if (path.startsWith('/admin') && role !== 'ADMIN') {
+                router.push('/');
+                return;
+            }
+
+            if (path.startsWith('/agency') && role !== 'AGENCY_STAFF') {
+                router.push('/');
+                return;
+            }
+
+            if (path.startsWith('/driver') && role !== 'DRIVER') {
+                router.push('/');
+                return;
+            }
         }
     }, [user, loading, pathname, router]);
 

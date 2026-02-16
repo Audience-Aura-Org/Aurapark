@@ -35,7 +35,7 @@ export default function Home() {
                   <span className="text-xs font-semibold text-neutral-700">Modern Travel Platform</span>
                 </div>
 
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-neutral-900 leading-tight">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-neutral-900 leading-tight">
                   Travel Anywhere
                   <br />
                   <span className="text-gradient-green">Easily</span>
@@ -138,8 +138,8 @@ export default function Home() {
                 <h4 className="font-semibold text-neutral-900 mb-5 text-sm">Quick Links</h4>
                 <ul className="space-y-3 text-sm font-semibold text-neutral-700">
                   <li><a href="/search" className="hover:text-primary-600 transition-colors">Routes</a></li>
-                  <li><a href="/agency/register" className="hover:text-primary-600 transition-colors">For Agencies</a></li>
-                  <li><a href="/driver/login" className="hover:text-primary-600 transition-colors">For Drivers</a></li>
+                  <li><a href="/register" className="hover:text-primary-600 transition-colors">For Agencies</a></li>
+                  <li><a href="/login" className="hover:text-primary-600 transition-colors">For Drivers</a></li>
                 </ul>
               </div>
 

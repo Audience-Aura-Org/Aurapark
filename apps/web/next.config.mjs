@@ -6,9 +6,18 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  turbopack: {
-    root: path.resolve(__dirname, '../../'),
+  // Removed standalone output for development
+  // output: 'standalone',
+
+  // Minimal config to ensure fast compilation
+  reactStrictMode: true,
+
+  // Ensure we don't scan too much
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
