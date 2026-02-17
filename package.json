@@ -7,7 +7,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "npm run build --workspace=@transport-platform/web && mkdir -p .next/static && cp -r apps/web/.next/standalone/node_modules . && cp -r apps/web/.next/standalone/apps/web/.next . && cp -r apps/web/.next/static/. .next/static/ && cp -r apps/web/public/. public/",
+    "build": "npm run build --workspace=@transport-platform/web && cp -r apps/web/.next .next && cp -r apps/web/public public",
     "build:web": "npm run build",
     "postbuild": "echo '✓ Build complete. Start with: npm start'",
     "start": "node server.js",
