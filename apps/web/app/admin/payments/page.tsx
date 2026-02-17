@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 export default function AdminPaymentsPage() {
     const [payments, setPayments] = useState<any[]>([]);
     const [agencies, setAgencies] = useState<any[]>([]);
+    const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         agencyId: '',
@@ -20,6 +21,7 @@ export default function AdminPaymentsPage() {
 
     useEffect(() => {
         fetchAgencies();
+        fetchStats();
     }, []);
 
     useEffect(() => {
@@ -32,6 +34,15 @@ export default function AdminPaymentsPage() {
             setAgencies(data.agencies || []);
         } catch (error) {
             console.error('Failed to fetch agencies:', error);
+        }
+    };
+
+    const fetchStats = async () => {
+        try {
+            const { data } = await axios.get('/api/admin/stats');
+            setStats(data);
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
         }
     };
 
@@ -69,15 +80,15 @@ export default function AdminPaymentsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="glass-card p-6">
                     <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Total Volume</div>
-                    <div className="text-3xl font-black text-neutral-900">XAF 45,200,000</div>
+                    <div className="text-3xl font-black text-neutral-900">XAF {(stats?.totalVolume || 0).toLocaleString()}</div>
                 </div>
                 <div className="glass-card p-6">
                     <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Platform Fees (10%)</div>
-                    <div className="text-3xl font-black text-primary-600">XAF 4,520,000</div>
+                    <div className="text-3xl font-black text-primary-600">XAF {(stats?.platformRevenue || 0).toLocaleString()}</div>
                 </div>
                 <div className="glass-card p-6">
-                    <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Active Refunds</div>
-                    <div className="text-3xl font-black text-danger-600">12</div>
+                    <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Refunded Amount</div>
+                    <div className="text-3xl font-black text-danger-600">{stats?.activeRefunds || 0}</div>
                 </div>
             </div>
 

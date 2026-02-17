@@ -41,9 +41,17 @@ export async function GET() {
             createdAt: { $gte: startOfDay, $lte: endOfDay }
         });
 
-        // Platform revenue (sum of all confirmed bookings * platform fee 10%)
-        const bookings = await Booking.find({ status: 'CONFIRMED' });
-        const platformRevenue = bookings.reduce((sum: number, booking: any) => sum + (booking.totalAmount * 0.1), 0);
+        // Platform revenue calculation
+        const confirmedBookings = await Booking.find({ status: 'CONFIRMED' });
+        const totalVolume = confirmedBookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+        const platformRevenue = confirmedBookings.reduce((sum, b) => sum + (b.totalAmount || 0) * 0.1, 0);
+
+        // Active Refunds
+        const activeRefunds = await Booking.countDocuments({ status: 'REFUNDED' });
+
+        // Pending Disputes
+        const Dispute = (await import('@/lib/models/Dispute')).default;
+        const pendingDisputes = await Dispute.countDocuments({ status: 'OPEN' });
 
         // Recent agencies
         const recentAgencies = await Agency.find()
@@ -65,10 +73,12 @@ export async function GET() {
             activeTrips,
             totalBookings,
             todayBookings,
+            totalVolume: Math.round(totalVolume),
             platformRevenue: Math.round(platformRevenue),
+            activeRefunds,
             recentAgencies,
             activeUsers: activeUsers.length,
-            pendingDisputes: 0 // TODO: Implement when Dispute model is ready
+            pendingDisputes
         }, { status: 200 });
 
     } catch (error: any) {

@@ -6,18 +6,19 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed standalone output for development
-  // output: 'standalone',
-
-  // Minimal config to ensure fast compilation
   reactStrictMode: true,
 
-  // Ensure we don't scan too much
+  // Set explicit root for Turbopack to silence workspace warnings
+  // and ensure efficient file scanning in the monorepo.
+  turbopack: {
+    root: path.resolve(__dirname, '../../'),
+  },
+
+  // These are standard but some Next.js versions/Turbopack versions 
+  // can be picky about them if not needed. 
+  // Removing 'eslint' to fix the unrecognized key warning.
   typescript: {
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
 };
 
