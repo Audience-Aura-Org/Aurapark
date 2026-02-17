@@ -178,12 +178,25 @@ export default function AdminPaymentsPage() {
                                             <div className="text-xs text-neutral-500">{payment.userId?.email || 'No Email'}</div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm font-semibold text-neutral-900">
-                                                PNR: {payment.bookingId?.pnr || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-neutral-600 truncate max-w-[150px]">
-                                                {payment.bookingId?.tripId?.routeId?.routeName || 'Manual Payment'}
-                                            </div>
+                                            {payment.type === 'SHIPMENT' ? (
+                                                <>
+                                                    <div className="text-sm font-semibold text-neutral-900">
+                                                        SHP: {payment.shipmentId?.trackingNumber || payment.transactionId || 'N/A'}
+                                                    </div>
+                                                    <div className="text-xs text-neutral-600">
+                                                        Shipment
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="text-sm font-semibold text-neutral-900">
+                                                        PNR: {payment.bookingId?.pnr || 'N/A'}
+                                                    </div>
+                                                    <div className="text-xs text-neutral-600 truncate max-w-[150px]">
+                                                        {payment.bookingId?.tripId?.routeId?.routeName || 'Manual Payment'}
+                                                    </div>
+                                                </>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm font-black text-neutral-900">

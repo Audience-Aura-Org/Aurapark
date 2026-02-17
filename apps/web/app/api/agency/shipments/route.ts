@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoConnection from '@/lib/mongo';
 import Shipment from '@/lib/models/Shipment';
+import Payment from '@/lib/models/Payment';
 import { getServerSession } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -78,6 +79,21 @@ export async function POST(req: NextRequest) {
                 timestamp: new Date(),
                 notes: 'Shipment initialized'
             }]
+        });
+
+        // Create Payment record for shipment
+        await Payment.create({
+            type: 'SHIPMENT',
+            shipmentId: shipment._id,
+            agencyId: session.agencyId,
+            userId: session.userId, // Link to agency staff creating it? Or maybe leave empty if it's just a shipment
+            amount: numericPrice,
+            platformFee: 0, // No platform fee for shipments currently? Or 10%? Let's assume 0 for now or same as booking
+            agencyAmount: numericPrice,
+            currency: 'XAF',
+            paymentMethod: body.paymentMethod || 'CASH', // Default to CASH
+            status: body.paymentStatus === 'PAID' ? 'PAID' : 'PENDING',
+            transactionId: `SHP-${shipment.trackingNumber}`
         });
 
         return NextResponse.json({ shipment });

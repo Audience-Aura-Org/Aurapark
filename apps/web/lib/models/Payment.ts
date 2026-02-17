@@ -18,14 +18,16 @@ export interface IPayment extends Document {
 }
 
 const PaymentSchema: Schema = new Schema({
-    bookingId: { type: Schema.Types.ObjectId, ref: 'Booking', required: true },
-    tripId: { type: Schema.Types.ObjectId, ref: 'Trip', required: true },
+    type: { type: String, enum: ['BOOKING', 'SHIPMENT'], default: 'BOOKING' },
+    bookingId: { type: Schema.Types.ObjectId, ref: 'Booking' },
+    shipmentId: { type: Schema.Types.ObjectId, ref: 'Shipment' },
+    tripId: { type: Schema.Types.ObjectId, ref: 'Trip' },
     agencyId: { type: Schema.Types.ObjectId, ref: 'Agency', required: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' }, // Can be null for guest shipments
     amount: { type: Number, required: true },
-    platformFee: { type: Number, required: true },
+    platformFee: { type: Number, default: 0 },
     agencyAmount: { type: Number, required: true },
-    currency: { type: String, default: 'USD' },
+    currency: { type: String, default: 'XAF' },
     paymentMethod: { type: String, required: true },
     transactionId: { type: String },
     status: {
