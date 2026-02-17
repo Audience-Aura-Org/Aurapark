@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import dbConnect from '@/lib/mongo';
 import Payment from '@/lib/models/Payment';
+import Shipment from '@/lib/models/Shipment';
+import Booking from '@/lib/models/Booking';
 import { verifyToken } from '@/lib/auth';
 
 // GET /api/admin/payments - Platform-wide payment logs
