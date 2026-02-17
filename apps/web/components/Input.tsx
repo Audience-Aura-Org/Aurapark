@@ -59,9 +59,9 @@ export function Input({
                     <label
                         htmlFor={inputId}
                         className={`
-                            absolute left-4 transition-all duration-200 pointer-events-none z-10
+                            absolute ${leftIcon ? 'left-11' : 'left-4'} transition-all duration-200 pointer-events-none z-10
                             ${shouldFloatLabel
-                                ? 'top-2 text-xs font-black text-primary-700 bg-white px-1.5 rounded-lg'
+                                ? 'top-[-10px] text-xs font-black text-primary-700 bg-white px-1.5 rounded-lg border border-primary-100'
                                 : 'top-1/2 -translate-y-1/2 text-base text-neutral-500 font-bold'
                             }
                         `}
