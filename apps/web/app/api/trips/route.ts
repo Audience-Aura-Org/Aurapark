@@ -83,8 +83,22 @@ export async function GET(req: Request) {
             const totalPassengers = bookings.reduce((sum, b) => sum + (b.passengers?.length || 0), 0);
             const actualRevenue = bookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
+            let effectiveStatus = trip.status;
+            const now = new Date();
+            const departure = new Date(trip.departureTime);
+            const arrival = new Date(trip.arrivalTime);
+
+            if (trip.status !== 'CANCELLED') {
+                if (arrival < now) {
+                    effectiveStatus = 'COMPLETED';
+                } else if (departure <= now && arrival >= now) {
+                    effectiveStatus = 'EN_ROUTE';
+                }
+            }
+
             return {
                 ...trip.toObject(),
+                status: effectiveStatus,
                 bookedCount: totalPassengers,
                 actualRevenue: actualRevenue
             };
