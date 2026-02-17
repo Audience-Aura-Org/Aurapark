@@ -16,7 +16,7 @@ export default function AdminTripsPage() {
     const [filters, setFilters] = useState({
         agencyId: '',
         status: '',
-        date: format(new Date(), 'yyyy-MM-dd')
+        date: ''
     });
 
     useEffect(() => {

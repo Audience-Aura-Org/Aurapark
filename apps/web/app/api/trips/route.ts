@@ -56,7 +56,16 @@ export async function GET(req: Request) {
             }
         }
 
+        if (date) {
+            const start = new Date(date);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
+            filter.departureTime = { ...filter.departureTime, $gte: start, $lte: end };
+        }
+
         let tripsData = await Trip.find(filter)
+            .populate('agencyId', 'name')
             .populate({
                 path: 'routeId',
                 select: 'routeName stops',
