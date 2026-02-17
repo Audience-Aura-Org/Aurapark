@@ -146,6 +146,7 @@ export default function AdminPaymentsPage() {
                             <tr className="border-b border-neutral-100 bg-neutral-50/50">
                                 <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Transaction ID</th>
                                 <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Agency</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">User</th>
                                 <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Booking / Trip</th>
                                 <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Amount</th>
                                 <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Fee / Net</th>
@@ -171,6 +172,10 @@ export default function AdminPaymentsPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm font-bold text-neutral-900">{payment.agencyId?.name || 'Unknown'}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-bold text-neutral-900">{payment.userId?.name || 'Unknown User'}</div>
+                                            <div className="text-xs text-neutral-500">{payment.userId?.email || 'No Email'}</div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm font-semibold text-neutral-900">

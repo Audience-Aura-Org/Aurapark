@@ -42,6 +42,7 @@ export async function GET(req: Request) {
 
         const payments = await Payment.find(filter)
             .populate('agencyId', 'name')
+            .populate('userId', 'name email')
             .populate({
                 path: 'bookingId',
                 select: 'pnr',
