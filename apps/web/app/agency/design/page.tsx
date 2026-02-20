@@ -10,7 +10,7 @@ type Toast = { type: 'success' | 'error'; text: string } | null;
 export default function AgencyDesignPage() {
     const [theme, setTheme] = useState({
         primaryColor: '#3b82f6',
-        accentColor: '#fbbf24',
+        accentColor: '#90ee904d',
         ticketHeadline: 'Safe, Reliable, Swift.',
         agencyName: 'Your Agency',
     });
@@ -33,7 +33,7 @@ export default function AgencyDesignPage() {
             const s = data.settings || {};
             setTheme({
                 primaryColor: s.branding?.primaryColor || '#3b82f6',
-                accentColor: s.branding?.accentColor || '#fbbf24',
+                accentColor: s.branding?.accentColor || '#90ee904d',
                 ticketHeadline: s.branding?.ticketHeadline || 'Safe, Reliable, Swift.',
                 agencyName: data.agencyName || 'Your Agency',
             });

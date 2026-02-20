@@ -33,7 +33,13 @@ function printTicket(booking: any) {
     const seatsList = trip.busId?.seatMap?.seats || [];
     const passengerRows = passengers.map((p: any, i: number) => {
         const seatIndex = seatsList.findIndex((s: any) => s.seatNumber === p.seatNumber);
-        const displaySeat = seatIndex !== -1 ? (seatIndex + 1).toString() : (p.seatNumber || (i + 1));
+        let displaySeat = p.seatNumber || (i + 1);
+        if (seatIndex !== -1) {
+            displaySeat = (seatIndex + 1).toString();
+        } else if (typeof displaySeat === 'string') {
+            const match = displaySeat.match(/^(\d+)([A-Z])$/);
+            if (match) displaySeat = ((parseInt(match[1]) - 1) * 4 + (match[2].charCodeAt(0) - 64)).toString();
+        }
 
         return '<tr>' +
             '<td style="padding:8px 12px;font-weight:700;color:#111">' + (i + 1) + '. ' + (p.name || '') + '</td>' +

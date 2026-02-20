@@ -17,7 +17,12 @@ export default function CheckInPage() {
     const getDisplaySeatNumber = (seatNumber: string) => {
         const seats = booking?.tripId?.busId?.seatMap?.seats || [];
         const index = seats.findIndex((s: any) => s.seatNumber === seatNumber);
-        return index !== -1 ? (index + 1).toString() : seatNumber;
+        if (index !== -1) return (index + 1).toString();
+        if (typeof seatNumber === 'string') {
+            const match = seatNumber.match(/^(\d+)([A-Z])$/);
+            if (match) return ((parseInt(match[1]) - 1) * 4 + (match[2].charCodeAt(0) - 64)).toString();
+        }
+        return seatNumber;
     };
 
     const handleSearch = async () => {

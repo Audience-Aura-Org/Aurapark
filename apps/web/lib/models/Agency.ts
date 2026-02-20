@@ -60,7 +60,7 @@ const AgencySchema: Schema = new Schema({
         },
         branding: {
             primaryColor: { type: String, default: '#3b82f6' },
-            accentColor: { type: String, default: '#fbbf24' },
+            accentColor: { type: String, default: '#90ee904d' },
             ticketHeadline: { type: String, default: 'Safe, Reliable, Swift.' },
         }
     }

@@ -46,7 +46,12 @@ export async function GET(
         const busSeats = trip.busId?.seatMap?.seats || [];
         const getDisplaySeatNumber = (seatId: string) => {
             const index = busSeats.findIndex((s: any) => s.seatNumber === seatId);
-            return index !== -1 ? (index + 1).toString() : seatId;
+            if (index !== -1) return (index + 1).toString();
+            if (typeof seatId === 'string') {
+                const match = seatId.match(/^(\d+)([A-Z])$/);
+                if (match) return ((parseInt(match[1]) - 1) * 4 + (match[2].charCodeAt(0) - 64)).toString();
+            }
+            return seatId;
         };
 
         // Flatten passengers from all bookings
