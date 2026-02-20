@@ -6,11 +6,8 @@ import { Button } from '@/components/Button';
 import { PageHeader } from '@/components/PageHeader';
 import { Badge } from '@/components/Badge';
 import Link from 'next/link';
-import { Sidebar } from '@/components/Sidebar';
-import { useSidebar } from '@/components/SidebarProvider';
 
 export default function AgencyDashboard() {
-    const { isCollapsed } = useSidebar();
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [agency, setAgency] = useState<any>(null);
@@ -75,13 +72,13 @@ export default function AgencyDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
                     title="Total Revenue"
-                    value={`$${(statsData.revenue?.totalRevenue || 0).toLocaleString()}`}
+                    value={(statsData.revenue?.totalRevenue || 0).toLocaleString()}
                     change="Live"
                     trend="neutral"
                 />
                 <StatCard
                     title="Net Earnings"
-                    value={`$${(statsData.revenue?.totalAgencyAmount || 0).toLocaleString()}`}
+                    value={(statsData.revenue?.totalAgencyAmount || 0).toLocaleString()}
                     change="Live"
                     trend="neutral"
                 />
@@ -245,7 +242,7 @@ export default function AgencyDashboard() {
                                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.1} d="M12 4v16m8-8H4" />
                                     </svg>
-                                    Schedule Mission
+                                    New Trip
                                 </Button>
                             </Link>
                             <Link href="/agency/check-in">
@@ -253,7 +250,7 @@ export default function AgencyDashboard() {
                                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
-                                    Fast Check-in
+                                    Check-In
                                 </Button>
                             </Link>
                             <Link href="/agency/buses">
@@ -261,7 +258,15 @@ export default function AgencyDashboard() {
                                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.1} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                     </svg>
-                                    Fleet Manager
+                                    Fleet
+                                </Button>
+                            </Link>
+                            <Link href="/agency/bookings">
+                                <Button variant="glass" size="sm" className="w-full justify-start text-left bg-white/40 ring-1 ring-black/5">
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.1} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                    </svg>
+                                    Bookings
                                 </Button>
                             </Link>
                         </div>
@@ -290,7 +295,7 @@ function StatCard({ title, value, change, trend }: any) {
                 </div>
                 <div className="text-3xl font-black text-neutral-900">
                     {title.toLowerCase().includes('revenue') || title.toLowerCase().includes('earnings')
-                        ? `XAF ${value.toString().replace('$', '').replace('XAF ', '')}`
+                        ? `XAF ${value}`
                         : value}
                 </div>
             </div>
