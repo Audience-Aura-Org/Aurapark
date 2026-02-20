@@ -31,6 +31,7 @@ export async function GET() {
         const totalTrips = await Trip.countDocuments();
         const activeTrips = await Trip.countDocuments({ status: 'SCHEDULED', departureTime: { $gte: new Date() } });
         const totalBookings = await Booking.countDocuments();
+        const totalUsers = await User.countDocuments({ role: 'USER' });
 
         // Today's bookings
         const startOfDay = new Date();
@@ -66,17 +67,41 @@ export async function GET() {
             createdAt: { $gte: thirtyDaysAgo }
         });
 
+        // Top agencies stats for performance report export
+        const allAgencies = await Agency.find({ status: 'ACTIVE' }).select('name trustScore').lean();
+        const agencyTripIds = await Trip.find({}).select('agencyId _id').lean();
+        const tripsByAgency = agencyTripIds.reduce((acc: any, t: any) => {
+            const key = t.agencyId?.toString();
+            if (key) { if (!acc[key]) acc[key] = []; acc[key].push(t._id); }
+            return acc;
+        }, {});
+        const agencyStats = await Promise.all(allAgencies.map(async (ag: any) => {
+            const agId = ag._id.toString();
+            const tripIds = tripsByAgency[agId] || [];
+            const bookings = await Booking.find({ tripId: { $in: tripIds } }).select('totalAmount').lean();
+            return {
+                name: ag.name,
+                tripCount: tripIds.length,
+                bookingCount: bookings.length,
+                revenue: bookings.reduce((s: number, b: any) => s + (b.totalAmount || 0), 0),
+                trustScore: ag.trustScore || 100
+            };
+        }));
+
         return NextResponse.json({
             totalAgencies,
             activeAgencies,
             totalTrips,
             activeTrips,
             totalBookings,
+            totalUsers,
             todayBookings,
             totalVolume: Math.round(totalVolume),
+            totalRevenue: Math.round(totalVolume),
             platformRevenue: Math.round(platformRevenue),
             activeRefunds,
             recentAgencies,
+            agencies: agencyStats,
             activeUsers: activeUsers.length,
             pendingDisputes
         }, { status: 200 });

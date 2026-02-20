@@ -44,9 +44,12 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         }
 
         dispute.status = status;
-        dispute.resolutionSummary = resolutionSummary;
+        if (resolutionSummary) dispute.resolutionSummary = resolutionSummary;
         if (refundAmount) dispute.refundAmount = refundAmount;
-        dispute.resolvedAt = new Date();
+        // Only stamp resolvedAt when truly finalized
+        if (status === 'RESOLVED' || status === 'REJECTED') {
+            dispute.resolvedAt = new Date();
+        }
         await dispute.save();
 
         // If status is REFUNDED, we should ideally trigger a payment refund here

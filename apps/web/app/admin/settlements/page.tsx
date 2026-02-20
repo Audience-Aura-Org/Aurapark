@@ -61,7 +61,7 @@ export default function AdminSettlementsPage() {
                 }
             />
 
-            {/* Quick Metrics */}
+            {/* Quick Metrics — all computed from real settlement data */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="glass-card p-6">
                     <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Pending Requests</div>
@@ -76,12 +76,19 @@ export default function AdminSettlementsPage() {
                     </div>
                 </div>
                 <div className="glass-card p-6">
-                    <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Total Paid (MTD)</div>
-                    <div className="text-3xl font-black text-success-600">XAF 12.4M</div>
+                    <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Total Paid (All Time)</div>
+                    <div className="text-3xl font-black text-success-600">
+                        XAF {settlements
+                            .filter(s => s.status === 'PAID')
+                            .reduce((sum: number, s: any) => sum + (s.netRevenue || 0), 0)
+                            .toLocaleString()}
+                    </div>
                 </div>
                 <div className="glass-card p-6">
                     <div className="text-xs font-bold text-neutral-600 uppercase tracking-wide mb-2">Rejected/Failed</div>
-                    <div className="text-3xl font-black text-danger-600">3</div>
+                    <div className="text-3xl font-black text-danger-600">
+                        {settlements.filter(s => s.status === 'FAILED').length}
+                    </div>
                 </div>
             </div>
 
