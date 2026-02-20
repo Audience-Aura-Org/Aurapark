@@ -82,7 +82,9 @@ export default function AgencySettingsPage() {
             setTimeout(() => setSaved(false), 3000);
         } catch (error) {
             console.error('Failed to save settings:', error);
-            alert('Error saving settings.');
+            setSaved(false);
+            // Show inline error via the saved state being false with a brief flash
+            alert('Error saving settings. Please try again.');
         } finally {
             setSaving(false);
         }
