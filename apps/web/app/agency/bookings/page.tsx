@@ -30,13 +30,17 @@ function printTicket(booking: any) {
     const origin = route.origin || 'ORIGIN';
     const destination = route.destination || 'DESTINATION';
 
-    const passengerRows = passengers.map((p: any, i: number) =>
-        '<tr>' +
-        '<td style="padding:8px 12px;font-weight:700;color:#111">' + (i + 1) + '. ' + (p.name || '') + '</td>' +
-        '<td style="padding:8px 12px;color:#555">' + (p.idNumber || '—') + '</td>' +
-        '<td style="padding:8px 12px;color:#555">' + (p.seatNumber || (i + 1)) + '</td>' +
-        '</tr>'
-    ).join('');
+    const seatsList = trip.busId?.seatMap?.seats || [];
+    const passengerRows = passengers.map((p: any, i: number) => {
+        const seatIndex = seatsList.findIndex((s: any) => s.seatNumber === p.seatNumber);
+        const displaySeat = seatIndex !== -1 ? (seatIndex + 1).toString() : (p.seatNumber || (i + 1));
+
+        return '<tr>' +
+            '<td style="padding:8px 12px;font-weight:700;color:#111">' + (i + 1) + '. ' + (p.name || '') + '</td>' +
+            '<td style="padding:8px 12px;color:#555">' + (p.idNumber || '—') + '</td>' +
+            '<td style="padding:8px 12px;color:#555">' + displaySeat + '</td>' +
+            '</tr>';
+    }).join('');
 
     const total = (booking.totalAmount || 0).toLocaleString();
 

@@ -19,8 +19,13 @@ function printUserTicket(booking: any) {
     const date = trip.departureTime ? new Date(trip.departureTime).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
     const time = trip.departureTime ? new Date(trip.departureTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
     const agencyName = trip.agencyId?.name || booking.agencyId?.name || 'Aura Park Transport Network';
+    const seatsList = trip.busId?.seatMap?.seats || [];
 
-    const passesHtml = booking.passengers.map((p: any, i: number) => `
+    const passesHtml = booking.passengers.map((p: any, i: number) => {
+        const seatIndex = seatsList.findIndex((s: any) => s.seatNumber === p.seatNumber);
+        const displaySeat = seatIndex !== -1 ? (seatIndex + 1).toString() : (p.seatNumber || (i + 1));
+
+        return `
         <div class="ticket">
             <div class="ticket-header">
                 <div>
@@ -54,7 +59,7 @@ function printUserTicket(booking: any) {
                     </div>
                     <div style="text-align:right">
                         <div class="label">Assigned Seat</div>
-                        <div style="font-size:32px;font-weight:900;color:#1e3a8a;line-height:1">${p.seatNumber}</div>
+                        <div style="font-size:32px;font-weight:900;color:#1e3a8a;line-height:1">${displaySeat}</div>
                     </div>
                 </div>
 
@@ -89,7 +94,8 @@ function printUserTicket(booking: any) {
                 </div>
             </div>
         </div>
-    `).join('<div class="page-break"></div>');
+        `;
+    }).join('<div class="page-break"></div>');
 
     const html = `
     <!DOCTYPE html>
@@ -226,7 +232,11 @@ function TicketContent() {
                                 <div className="w-full md:w-auto text-center md:text-right bg-white/40 backdrop-blur-md px-8 py-4 rounded-3xl border border-white/60">
                                     <div className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.2em] mb-1">Assigned Seat</div>
                                     <div className="text-5xl font-black text-primary-600 tracking-tighter">
-                                        {passenger.seatNumber}
+                                        {(() => {
+                                            const seats = booking.tripId?.busId?.seatMap?.seats || [];
+                                            const seatIndex = seats.findIndex((s: any) => s.seatNumber === passenger.seatNumber);
+                                            return seatIndex !== -1 ? (seatIndex + 1).toString() : passenger.seatNumber;
+                                        })()}
                                     </div>
                                 </div>
                             </div>
