@@ -238,21 +238,29 @@ export default function AgencySettlementsPage() {
                 {settlements.length > 0 ? (
                     <div className="space-y-3">
                         {settlements.map((settlement: any) => (
-                            <div key={settlement._id} className={`flex items-center justify-between py-2 px-4 bg-white/60 border-l-4 rounded-xl hover:bg-white/90 transition-all group shadow-sm hover:shadow-md ${settlement.status === 'PAID' ? 'border-l-success-500' : 'border-l-warning-500'}`}>
+                            <div key={settlement._id} className={`flex items-center justify-between py-2 px-4 bg-white/60 border-l-4 rounded-xl hover:bg-white/90 transition-all group shadow-sm hover:shadow-md ${settlement.status === 'PAID' ? 'border-l-success-500' : settlement.status === 'PROCESSING' ? 'border-l-primary-500' : 'border-l-warning-500'}`}>
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 bg-gradient-to-br from-primary-400 to-primary-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md shrink-0">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="text-xs font-black text-neutral-900">Settlement #{settlement._id.slice(-6).toUpperCase()}</div>
-                                        <div className="text-[10px] font-bold text-neutral-400 h-fit leading-none mb-[-1px] opacity-60">• {new Date(settlement.createdAt || Date.now()).toLocaleDateString()}</div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-xs font-black text-neutral-900">Settlement #{settlement._id.slice(-6).toUpperCase()}</div>
+                                            <div className="text-[10px] font-bold text-neutral-400 opacity-60">• {settlement.period || new Date(settlement.createdAt).toLocaleDateString()}</div>
+                                        </div>
+                                        <div className="text-[10px] text-neutral-400 mt-0.5">
+                                            Gross: XAF {(settlement.grossRevenue || 0).toLocaleString()} &nbsp;|&nbsp; Fee: XAF {(settlement.platformFee || 0).toLocaleString()}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="text-right flex items-center gap-4">
-                                    <div className="text-sm font-black text-neutral-900 leading-none">XAF {(settlement.amount || 0).toLocaleString()}</div>
-                                    <Badge variant={settlement.status === 'PAID' ? 'success' : 'warning'} size="sm" className="scale-[0.8] origin-right">
+                                    <div>
+                                        <div className="text-sm font-black text-neutral-900 leading-none">XAF {(settlement.netRevenue || 0).toLocaleString()}</div>
+                                        <div className="text-[10px] text-neutral-400 mt-0.5 text-right">Net payout</div>
+                                    </div>
+                                    <Badge variant={settlement.status === 'PAID' ? 'success' : settlement.status === 'PROCESSING' ? 'info' : 'warning'} size="sm" className="scale-[0.8] origin-right">
                                         {settlement.status || 'PENDING'}
                                     </Badge>
                                 </div>
