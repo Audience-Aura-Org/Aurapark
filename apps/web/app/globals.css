@@ -203,3 +203,110 @@
   backdrop-filter: blur(2px);
   border-radius: inherit;
 }
+
+/* ===================== PRINT STYLES ===================== */
+@media print {
+
+  /* ── 1. KILL ALL ANIMATIONS (critical — prevents white page from opacity:0 stuck state) */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ── 2. BASE: white page, black text */
+  html,
+  body {
+    background: white !important;
+    background-image: none !important;
+    color: #111 !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── 3. Force ALL text dark (overrides text-white, text-gray-*, etc.) */
+  * {
+    color: #111 !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  /* ── 4. Hide sidebar, nav, bottom bar, overlays */
+  aside,
+  nav,
+  header,
+  footer,
+  [data-sidebar],
+  [class*="bottom-nav"],
+  [class*="safe-bottom-nav"],
+  [class*="overlay"],
+  [class*="mobile-menu"],
+  [class*="backdrop"] {
+    display: none !important;
+  }
+
+  /* ── 5. Remove layout offsets introduced by sidebar */
+  main,
+  [class*="lg:pl-"],
+  [class*="lg:ml-"] {
+    padding-left: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    min-height: unset !important;
+    max-width: 100% !important;
+  }
+
+  /* ── 6. Table borders for readability */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #aaa !important;
+    padding: 6px 10px !important;
+    color: #000 !important;
+    background-color: white !important;
+  }
+
+  thead th {
+    background-color: #e8e8e8 !important;
+    font-weight: bold !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f5f5f5 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* ── 7. Ticket: keep each on its own page */
+  .ticket-print {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 2px solid #555 !important;
+    padding: 1.5cm !important;
+    margin-bottom: 1cm !important;
+    background-color: white !important;
+  }
+
+  /* ── 8. Page break utility */
+  .print-page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+}

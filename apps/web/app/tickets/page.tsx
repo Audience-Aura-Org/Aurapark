@@ -53,21 +53,23 @@ function TicketContent() {
 
     return (
         <div className="space-y-8">
-            <PageHeader
-                title="Your Tickets"
-                subtitle={`Booking Ref: ${booking.pnr}`}
-                breadcrumbs={['Home', 'Bookings', 'Passes']}
-                actions={
-                    <Button variant="glass" size="sm" onClick={() => window.print()}>
-                        Print Passes
-                    </Button>
-                }
-            />
+            <div className="print:hidden">
+                <PageHeader
+                    title="Your Tickets"
+                    subtitle={`Booking Ref: ${booking.pnr}`}
+                    breadcrumbs={['Home', 'Bookings', 'Passes']}
+                    actions={
+                        <Button variant="glass" size="sm" onClick={() => window.print()}>
+                            Print Passes
+                        </Button>
+                    }
+                />
+            </div>
 
             {/* Ticket Cards */}
             <div className="grid grid-cols-1 gap-8">
                 {booking.passengers?.map((passenger: any, index: number) => (
-                    <div key={index} className="glass-panel-strong p-10 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${index * 150}ms` }}>
+                    <div key={index} className="ticket-print glass-panel-strong p-10 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${index * 150}ms` }}>
                         {/* Decorative Elements */}
                         <div className="absolute top-0 right-0 w-80 h-80 bg-primary-200/20 rounded-full blur-[100px] pointer-events-none"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent-200/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -135,7 +137,7 @@ function TicketContent() {
                                 <div className="p-8 bg-white rounded-[40px] shadow-2xl border-8 border-neutral-50 relative group">
                                     <div className="w-48 h-48 flex items-center justify-center">
                                         <div className="text-center">
-                                            <div className="text-7xl mb-2 grayscale group-hover:grayscale-0 transition-all">📱</div>
+                                            <div className="text-7xl mb-2 grayscale transition-all">📱</div>
                                             <div className="text-[10px] font-bold text-neutral-400 tracking-[0.2em]">{booking.pnr}</div>
                                         </div>
                                     </div>
@@ -153,7 +155,7 @@ function TicketContent() {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto pt-8">
+            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto pt-8 print:hidden">
                 <Link href="/bookings" className="flex-1">
                     <Button variant="glass" size="lg" className="w-full font-black uppercase text-xs">
                         Back to Bookings
@@ -179,12 +181,14 @@ export default function TicketsPage() {
     const { isCollapsed } = useSidebar();
 
     return (
-        <div className="min-h-screen bg-mesh-green selection:bg-primary-500 selection:text-white">
-            <Sidebar />
-            <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-20 safe-bottom-nav ${isCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>
-                <div className="max-w-[1400px] p-4 md:p-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="min-h-screen bg-mesh-green print:bg-white selection:bg-primary-500 selection:text-white print:min-h-0">
+            <div className="print:hidden">
+                <Sidebar />
+            </div>
+            <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-20 print:pt-0 print:m-0 safe-bottom-nav print:pb-0 ${isCollapsed ? 'lg:pl-20 print:pl-0' : 'lg:pl-72 print:pl-0'}`}>
+                <div className="max-w-[1400px] p-4 md:p-8 print:p-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <Suspense fallback={
-                        <div className="flex items-center justify-center py-40">
+                        <div className="flex items-center justify-center py-40 print:hidden">
                             <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-400 rounded-full animate-spin"></div>
                         </div>
                     }>

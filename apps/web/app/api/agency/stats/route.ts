@@ -3,9 +3,8 @@ import dbConnect from '@/lib/mongo';
 import Booking from '@/lib/models/Booking';
 import Trip from '@/lib/models/Trip';
 import Bus from '@/lib/models/Bus';
-import Payment from '@/lib/models/Payment';
-import Route from '@/lib/models/Route';
-import User from '@/lib/models/User';
+// Register Route model so nested populate works
+import '@/lib/models/Route';
 import mongoose from 'mongoose';
 
 export async function GET(req: Request) {
@@ -15,6 +14,11 @@ export async function GET(req: Request) {
 
         if (!agencyId) {
             return NextResponse.json({ error: 'Agency ID required' }, { status: 400 });
+        }
+
+        // Validate agencyId is a valid ObjectId before casting
+        if (!mongoose.Types.ObjectId.isValid(agencyId)) {
+            return NextResponse.json({ error: 'Invalid Agency ID format' }, { status: 400 });
         }
 
         await dbConnect();
@@ -35,11 +39,10 @@ export async function GET(req: Request) {
             { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }
         ]);
 
-        // Net earnings (assume 100% for now or apply logic)
         const totalRevenue = revenueData[0]?.totalRevenue || 0;
-        const totalAgencyAmount = totalRevenue; // Simple for now
+        const totalAgencyAmount = totalRevenue;
 
-        // 2. Booking Stats (Counting CONFIRMED Tickets/Seats from current/future missions only)
+        // 2. Booking Stats (Upcoming confirmed trips)
         const now = new Date();
         const bookingStats = await Booking.aggregate([
             {
@@ -64,7 +67,7 @@ export async function GET(req: Request) {
             {
                 $group: {
                     _id: '$status',
-                    ticketCount: { $sum: { $size: "$passengers" } },
+                    ticketCount: { $sum: { $size: '$passengers' } },
                     recordCount: { $sum: 1 }
                 }
             }
@@ -81,12 +84,10 @@ export async function GET(req: Request) {
 
         const inTransitCount = await Trip.countDocuments({
             agencyId: oid,
-            routeId: { $ne: null },
-            busId: { $ne: null },
             status: 'EN_ROUTE'
         });
 
-        // 5. Revenue Chart Data (Last 7 Days)
+        // 4. Revenue Chart Data (Last 7 Days)
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -109,67 +110,64 @@ export async function GET(req: Request) {
             },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-                    revenue: { $sum: "$totalAmount" }
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                    revenue: { $sum: '$totalAmount' }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
-        // 6. Performance Score Calculation (Dynamic)
-        const mockKeywords = ['John Doe', 'Jane Smith', 'Alice Traveler', 'Bob Commuter', 'Charlie Hopper', 'Test Passenger'];
+        // 5. Performance Score
+        const agencyTrips = await Trip.find({ agencyId: oid }).select('_id').lean();
+        const agencyTripIds = agencyTrips.map((t: any) => t._id);
 
-        // Fetch all trips for this agency to scope bookings
-        const agencyTrips = await Trip.find({ agencyId: oid }).select('_id');
-        const agencyTripIds = agencyTrips.map(t => t._id);
+        let totalPassengers = 0;
+        let checkedInPassengers = 0;
 
-        // Fetch all bookings for agency to calculate check-in rate
-        const allAgencyBookings = await Booking.find({ tripId: { $in: agencyTripIds } }).lean();
+        if (agencyTripIds.length > 0) {
+            const allAgencyBookings = await Booking.find({ tripId: { $in: agencyTripIds } })
+                .select('passengers')
+                .lean();
 
-        const realBookings = allAgencyBookings.filter((b: any) =>
-            Array.isArray(b.passengers) && !b.passengers.some((p: any) =>
-                mockKeywords.some(kw => p.name?.includes(kw))
-            )
-        );
+            (allAgencyBookings as any[]).forEach((b: any) => {
+                if (Array.isArray(b.passengers)) {
+                    totalPassengers += b.passengers.length;
+                    checkedInPassengers += b.passengers.filter((p: any) => p.checkedIn).length;
+                }
+            });
+        }
 
-        let totalRealPassengers = 0;
-        let checkedInRealPassengers = 0;
-        realBookings.forEach((b: any) => {
-            totalRealPassengers += b.passengers.length;
-            checkedInRealPassengers += b.passengers.filter((p: any) => p.checkedIn).length;
-        });
+        const checkInRate = totalPassengers > 0 ? (checkedInPassengers / totalPassengers) * 100 : 100;
 
-        const checkInRate = totalRealPassengers > 0 ? (checkedInRealPassengers / totalRealPassengers) * 100 : 100;
-
-        // Reliability: completed trips vs total missions (excluding current/future ones)
         const completedTrips = await Trip.countDocuments({ agencyId: oid, status: 'COMPLETED' });
-        const failedTrips = await Trip.countDocuments({ agencyId: oid, status: { $in: ['CANCELLED'] } });
-        const reliabilityScore = (completedTrips + failedTrips) > 0 ? (completedTrips / (completedTrips + failedTrips)) * 100 : 100;
+        const failedTrips = await Trip.countDocuments({ agencyId: oid, status: 'CANCELLED' });
+        const reliabilityScore = (completedTrips + failedTrips) > 0
+            ? (completedTrips / (completedTrips + failedTrips)) * 100
+            : 100;
 
-        // Final trust score: 40% check-in, 60% reliability
         const dynamicTrustScore = Math.round((checkInRate * 0.4) + (reliabilityScore * 0.6));
 
-        // 4. Recent Bookings (Strictly real data, scoped to agency trips)
-        const agencyRecentBookings = await Booking.find({
-            tripId: { $in: agencyTripIds },
-            'passengers.name': { $nin: mockKeywords.map(kw => new RegExp(kw, 'i')) }
-        })
-            .populate({
-                path: 'tripId',
-                populate: { path: 'routeId' }
-            })
-            .populate('userId', 'name email')
-            .sort({ createdAt: -1 })
-            .limit(10);
+        // 6. Recent Bookings (scoped to agency trips)
+        let agencyRecentBookings: any[] = [];
+        if (agencyTripIds.length > 0) {
+            agencyRecentBookings = await Booking.find({ tripId: { $in: agencyTripIds } })
+                .populate({
+                    path: 'tripId',
+                    populate: { path: 'routeId', model: 'Route' }
+                })
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .lean() as any[];
+        }
 
-        // 6. Fleet Stats
+        // 7. Fleet Stats
         const busCount = await Bus.countDocuments({ agencyId: oid });
 
         return NextResponse.json({
-            revenue: revenueData[0] || { totalAgencyAmount: 0, totalRevenue: 0 },
+            revenue: { totalRevenue, totalAgencyAmount },
             bookings: bookingStats,
             activeTrips: activeTripsCount,
-            inTransitCount: inTransitCount,
+            inTransitCount,
             recentBookings: agencyRecentBookings,
             chartData,
             busCount,
@@ -177,7 +175,10 @@ export async function GET(req: Request) {
         }, { status: 200 });
 
     } catch (error: any) {
-        console.error('Error fetching agency stats:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error('[Agency Stats] Error:', error?.message || error);
+        return NextResponse.json({
+            error: 'Internal Server Error',
+            details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+        }, { status: 500 });
     }
 }

@@ -12,6 +12,8 @@ import SeatReservation from '@/lib/models/SeatReservation';
 import { ReservationStatus, PaymentStatus, BookingStatus, NotificationType, UserRole } from '@/lib/types';
 import { NotificationService } from '@/lib/services/NotificationService';
 import { AuditService } from '@/lib/services/AuditService';
+import Notification from '@/lib/models/Notification';
+import Payment from '@/lib/models/Payment';
 import crypto from 'crypto';
 
 // GET /api/bookings - List bookings (filtered by user or agency)
@@ -131,6 +133,24 @@ export async function POST(req: Request) {
             contactPhone,
             paymentStatus: PaymentStatus.PENDING, // Allow Pay on Site
             status: BookingStatus.CONFIRMED
+        });
+
+        // 5. Create PENDING Payment Record
+        const platformFee = totalAmount * 0.10; // 10% Platform Fee
+        const agencyAmount = totalAmount - platformFee;
+
+        await Payment.create({
+            bookingId: newBooking._id,
+            tripId: reservation.tripId,
+            agencyId: trip.agencyId,
+            userId: finalUserId,
+            amount: totalAmount,
+            platformFee,
+            agencyAmount,
+            currency: 'XAF',
+            paymentMethod: 'CASH_ON_BOARD', // Default for now
+            status: PaymentStatus.PENDING,
+            transactionId: `TXN-${pnr}-${Date.now().toString().slice(-4)}`
         });
 
         // 3. Update Trip available seats

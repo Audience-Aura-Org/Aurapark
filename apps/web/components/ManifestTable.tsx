@@ -41,9 +41,9 @@ export default function ManifestTable({ tripId }: { tripId: string }) {
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                    <thead className="bg-[#0F172A]/40 text-gray-400 text-[10px] uppercase font-black tracking-[0.2em]">
+            <div className="overflow-x-auto print:overflow-visible">
+                <table className="w-full text-left max-md:block">
+                    <thead className="bg-[#0F172A]/40 text-gray-400 text-[10px] uppercase font-black tracking-[0.2em] max-md:hidden">
                         <tr>
                             <th className="px-8 py-6">Coordinates</th>
                             <th className="px-8 py-6">Passenger Integrity</th>
@@ -51,31 +51,37 @@ export default function ManifestTable({ tripId }: { tripId: string }) {
                             <th className="px-8 py-6 text-right">Status</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-white/5 max-md:block max-md:divide-y-0 max-md:space-y-4 max-md:p-4">
                         {manifest.sort((a, b) => a.seatNumber.localeCompare(b.seatNumber, undefined, { numeric: true })).map((p, idx) => (
-                            <tr key={idx} className="text-white hover:bg-white/[0.03] transition-all group">
-                                <td className="px-8 py-6">
+                            <tr key={idx} className="text-white hover:bg-white/[0.03] transition-all group max-md:block max-md:bg-white/[0.02] max-md:rounded-2xl max-md:border max-md:border-white/5 max-md:p-4">
+                                <td className="md:px-8 md:py-6 max-md:flex max-md:justify-between max-md:items-center max-md:mb-4">
+                                    <span className="md:hidden text-[10px] font-black text-gray-500 uppercase tracking-widest">Seat</span>
                                     <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-accent text-sm group-hover:bg-accent group-hover:text-primary group-hover:scale-110 transition-all duration-300">
                                         {p.seatNumber}
                                     </div>
                                 </td>
-                                <td className="px-8 py-6">
-                                    <div className="font-black text-lg tracking-tight group-hover:translate-x-1 transition-transform">{p.name}</div>
-                                    <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex gap-3 mt-1">
-                                        <span>{p.gender}</span>
-                                        <span className="opacity-20">|</span>
-                                        <span>{p.age} YEARS</span>
+                                <td className="md:px-8 md:py-6 max-md:flex max-md:justify-between max-md:items-center max-md:mb-4 max-md:pb-4 max-md:border-b max-md:border-white/5">
+                                    <span className="md:hidden text-[10px] font-black text-gray-500 uppercase tracking-widest">Passenger</span>
+                                    <div className="text-right md:text-left">
+                                        <div className="font-black text-lg tracking-tight group-hover:translate-x-1 transition-transform">{p.name}</div>
+                                        <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex gap-3 mt-1 md:justify-start justify-end">
+                                            <span>{p.gender}</span>
+                                            <span className="opacity-20">|</span>
+                                            <span>{p.age} YEARS</span>
+                                        </div>
                                     </div>
                                 </td>
-                                <td className="px-8 py-6 text-center">
+                                <td className="md:px-8 md:py-6 text-center max-md:flex max-md:justify-between max-md:items-center max-md:mb-4">
+                                    <span className="md:hidden text-[10px] font-black text-gray-500 uppercase tracking-widest">PNR</span>
                                     <span className="font-mono text-[11px] text-gray-400 border border-white/5 px-3 py-1.5 rounded-lg bg-black/20 tracking-tighter shadow-inner">
                                         {p.pnr}
                                     </span>
                                 </td>
-                                <td className="px-8 py-6 text-right">
+                                <td className="md:px-8 md:py-6 text-right max-md:flex max-md:justify-between max-md:items-center">
+                                    <span className="md:hidden text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</span>
                                     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest ${p.checkedIn
-                                            ? 'bg-success text-primary shadow-lg shadow-success/20'
-                                            : 'bg-white/5 text-gray-400 border border-white/5'
+                                        ? 'bg-success text-primary shadow-lg shadow-success/20'
+                                        : 'bg-white/5 text-gray-400 border border-white/5'
                                         }`}>
                                         {p.checkedIn && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>}
                                         {p.checkedIn ? 'CLEARED' : 'PENDING'}
@@ -84,8 +90,8 @@ export default function ManifestTable({ tripId }: { tripId: string }) {
                             </tr>
                         ))}
                         {manifest.length === 0 && (
-                            <tr>
-                                <td colSpan={4} className="px-8 py-20 text-center text-gray-600">
+                            <tr className="max-md:block">
+                                <td colSpan={4} className="px-8 py-20 text-center text-gray-600 max-md:block">
                                     <div className="text-4xl mb-4 opacity-20">📡</div>
                                     <div className="font-black uppercase tracking-[0.3em] text-xs">No Signal Detected</div>
                                     <div className="text-[10px] font-medium opacity-40 mt-1 uppercase">Awaiting passenger reservations</div>

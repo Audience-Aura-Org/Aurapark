@@ -2,24 +2,69 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/Button';
+import { PageHeader } from '@/components/PageHeader';
 import { Badge } from '@/components/Badge';
 import { EmptyState } from '@/components/EmptyState';
-import { Input } from '@/components/Input';
+import Link from 'next/link';
+import { format } from 'date-fns';
 
 export default function AgencyBookingsPage() {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [agencyId, setAgencyId] = useState<string | null>(null);
+    const [filters, setFilters] = useState({
+        status: '',
+        pnr: '',
+        phone: '',
+        date: ''
+    });
 
     useEffect(() => {
-        fetchBookings();
+        fetchInitialData();
     }, []);
 
-    const fetchBookings = async () => {
+    useEffect(() => {
+        if (agencyId) {
+            const timer = setTimeout(() => {
+                fetchBookings(agencyId);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [filters, agencyId]);
+
+    const fetchInitialData = async () => {
         try {
-            const { data } = await axios.get('/api/agency/settlements'); // Reusing for list
-            setBookings(data.transactions || []);
+            const { data } = await axios.get('/api/auth/me');
+            // agency._id is returned separately from user
+            if (data.agency?._id) {
+                setAgencyId(data.agency._id);
+            } else if (data.user?.agencyId) {
+                // fallback: agencyId baked into token
+                setAgencyId(data.user.agencyId);
+            } else {
+                // no agency found — stop loading
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Failed to fetch user:', error);
+            setLoading(false);
+        }
+    };
+
+    const fetchBookings = async (agencyId: string) => {
+        setLoading(true);
+        try {
+            const queryParams = new URLSearchParams();
+            queryParams.append('agencyId', agencyId);
+
+            if (filters.status) queryParams.append('status', filters.status);
+            if (filters.pnr) queryParams.append('pnr', filters.pnr);
+            if (filters.phone) queryParams.append('phone', filters.phone);
+            if (filters.date) queryParams.append('date', filters.date);
+
+            const { data } = await axios.get(`/api/bookings?${queryParams.toString()}`);
+            setBookings(data.bookings || []);
         } catch (error) {
             console.error('Failed to fetch bookings:', error);
         } finally {
@@ -27,85 +72,150 @@ export default function AgencyBookingsPage() {
         }
     };
 
-    if (loading) return (
-        <div className="flex items-center justify-center p-12">
-            <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-400 rounded-full animate-spin"></div>
-        </div>
-    );
-
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <PageHeader
-                title="Unified Booking Registry"
-                subtitle="Centralized management of all passenger reservations and ticket lifecycles"
+                title="Agency Bookings"
+                subtitle="Search, filter, and manage all ticket bookings for your agency"
                 breadcrumbs={['Agency', 'Bookings']}
                 actions={
-                    <Button variant="primary">Manual Ticket Entry</Button>
+                    <div className="flex gap-3">
+                        <Button variant="glass" size="sm">Download CSV</Button>
+                    </div>
                 }
             />
 
-            {/* Registry Search Matrix */}
-            <div className="glass-panel p-6 flex items-center gap-4">
-                <div className="flex-1">
-                    <input
-                        type="text"
-                        placeholder="SEARCH BY PNR, PASSENGER, OR OMNI-SEARCH..."
-                        className="w-full bg-neutral-50 border border-neutral-100 rounded-xl p-4 text-xs font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-primary-500"
-                    />
+            {/* Advanced Search & Filters */}
+            <div className="glass-panel p-6 space-y-4">
+                <div className="flex flex-wrap gap-4">
+                    <div className="flex-1 min-w-[200px] space-y-1.5">
+                        <label className="text-xs font-bold text-neutral-600 uppercase ml-1">Search PNR</label>
+                        <input
+                            type="text"
+                            placeholder="e.g. A1B2C3D4"
+                            value={filters.pnr}
+                            onChange={(e) => setFilters({ ...filters, pnr: e.target.value })}
+                            className="w-full h-11 px-4 rounded-xl bg-white/50 border border-white/20 text-neutral-900 font-semibold focus:ring-2 focus:ring-primary-400 outline-none transition-all"
+                        />
+                    </div>
+                    <div className="flex-1 min-w-[200px] space-y-1.5">
+                        <label className="text-xs font-bold text-neutral-600 uppercase ml-1">Phone Number</label>
+                        <input
+                            type="text"
+                            placeholder="e.g. 677..."
+                            value={filters.phone}
+                            onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
+                            className="w-full h-11 px-4 rounded-xl bg-white/50 border border-white/20 text-neutral-900 font-semibold focus:ring-2 focus:ring-primary-400 outline-none transition-all"
+                        />
+                    </div>
                 </div>
-                <Button variant="glass" className="h-full px-8">Advanced Synthesis</Button>
+                <div className="flex flex-wrap gap-4 items-end">
+                    <div className="flex-1 min-w-[200px] space-y-1.5">
+                        <label className="text-xs font-bold text-neutral-600 uppercase ml-1">Status</label>
+                        <select
+                            value={filters.status}
+                            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                            className="w-full h-11 px-4 rounded-xl bg-white/50 border border-white/20 text-neutral-900 font-semibold focus:ring-2 focus:ring-primary-400 outline-none transition-all"
+                        >
+                            <option value="">All Statuses</option>
+                            <option value="CONFIRMED">Confirmed</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                            <option value="REFUNDED">Refunded</option>
+                        </select>
+                    </div>
+                    <div className="w-48 space-y-1.5">
+                        <label className="text-xs font-bold text-neutral-600 uppercase ml-1">Booking Date</label>
+                        <input
+                            type="date"
+                            value={filters.date}
+                            onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+                            className="w-full h-11 px-4 rounded-xl bg-white/50 border border-white/20 text-neutral-900 font-semibold focus:ring-2 focus:ring-primary-400 outline-none transition-all"
+                        />
+                    </div>
+                    <Button
+                        variant="glass"
+                        onClick={() => setFilters({ status: '', pnr: '', phone: '', date: '' })}
+                    >
+                        Reset
+                    </Button>
+                </div>
             </div>
 
             {/* Bookings Table */}
-            <div className="glass-panel p-8">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-xl font-black text-neutral-900 uppercase tracking-tight italic">Mission Critical Manifests</h2>
-                    <Badge variant="info">GLOBAL SYNC ACTIVE</Badge>
+            <div className="glass-panel overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-neutral-100 bg-neutral-50/50">
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">PNR</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Passenger</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Route</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Amount</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-neutral-600 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-right text-xs font-black text-neutral-600 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-neutral-100">
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-20 text-center">
+                                        <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-400 rounded-full animate-spin mx-auto"></div>
+                                    </td>
+                                </tr>
+                            ) : bookings.length > 0 ? (
+                                bookings.map((booking) => (
+                                    <tr key={booking._id} className="hover:bg-white/40 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <span className="text-sm font-black text-neutral-900 font-mono">#{booking.pnr}</span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-bold text-neutral-900">{booking.passengers[0]?.name || 'Unknown'}</div>
+                                            <div className="text-xs text-neutral-600">{booking.contactPhone}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-semibold text-neutral-900 truncate max-w-[150px]">
+                                                {booking.tripId?.routeId?.routeName || 'Unknown Route'}
+                                            </div>
+                                            <div className="text-xs text-neutral-600">
+                                                {booking.createdAt ? format(new Date(booking.createdAt), 'MMM d, h:mm a') : 'N/A'}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-black text-neutral-900">
+                                                XAF {(booking.totalAmount || 0).toLocaleString()}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Badge variant={
+                                                booking.status === 'CONFIRMED' ? 'success' :
+                                                    booking.status === 'CANCELLED' ? 'danger' :
+                                                        booking.status === 'REFUNDED' ? 'warning' : 'info'
+                                            } size="sm">
+                                                {booking.status}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <Link href={`/agency/trips/${booking.tripId?._id}`}>
+                                                <Button variant="glass" size="sm">View Trip</Button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-20">
+                                        <EmptyState
+                                            icon={<svg className="w-12 h-12 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>}
+                                            title="No Bookings Found"
+                                            description="No ticket bookings match your search criteria."
+                                        />
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
-
-                {bookings.length > 0 ? (
-                    <div className="space-y-3">
-                        <div className="hidden lg:grid grid-cols-6 px-4 py-2 text-[10px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-50 mb-4">
-                            <div>Registry Reference</div>
-                            <div>Primary Passenger</div>
-                            <div>Financial Status</div>
-                            <div>Logistics Vector</div>
-                            <div>Timestamp</div>
-                            <div className="text-right">Action Signature</div>
-                        </div>
-                        {bookings.map((booking) => (
-                            <div key={booking._id} className="grid grid-cols-1 lg:grid-cols-6 gap-4 items-center p-4 bg-white/40 hover:bg-white rounded-2xl transition-all border border-transparent shadow-sm hover:shadow-lg group">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center text-primary-600 font-black text-[10px]">🎫</div>
-                                    <div className="font-black text-neutral-900 text-sm tracking-tighter">{booking.pnr || booking._id.slice(-6).toUpperCase()}</div>
-                                </div>
-                                <div className="font-bold text-neutral-700 text-xs">
-                                    {booking.passengers?.[0]?.name || 'OMNI-PASSENGER'}
-                                </div>
-                                <div>
-                                    <Badge variant={booking.paymentStatus === 'PAID' ? 'success' : 'warning'} size="sm" className="scale-75 origin-left">
-                                        {booking.paymentStatus}
-                                    </Badge>
-                                </div>
-                                <div className="text-[10px] font-black text-neutral-400 uppercase truncate">
-                                    {booking.origin} → {booking.destination}
-                                </div>
-                                <div className="text-[10px] font-bold text-neutral-500 font-mono">
-                                    {new Date(booking.createdAt).toLocaleString()}
-                                </div>
-                                <div className="text-right">
-                                    <Button variant="glass" size="sm" className="scale-90 opacity-40 group-hover:opacity-100 transition-all font-black text-[10px] uppercase">Audit Manifest</Button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <EmptyState
-                        icon="📇"
-                        title="Manifest Void Detected"
-                        description="Deployment manifests will generate as passengers interact with agency routes."
-                    />
-                )}
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import { InputHTMLAttributes, ReactNode, useState, useEffect } from 'react';
+import { InputHTMLAttributes, ReactNode, useState, useEffect, useId } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -33,7 +33,8 @@ export function Input({
     const [isFocused, setIsFocused] = useState(false);
     const [hasValue, setHasValue] = useState(!!restProps.value || !!restProps.defaultValue);
 
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || `input-${generatedId}`;
 
     // Auto-float label for date/time/number inputs
     const shouldFloatLabel = ['date', 'time', 'datetime-local', 'number'].includes(type) || isFocused || hasValue;

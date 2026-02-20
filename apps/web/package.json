@@ -13,7 +13,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.24",
     "axios": "^1.13.4",
-    "bcryptjs": "^3.0.3",
+    "bcryptjs": "2.4.3",
     "cookie": "^1.1.1",
     "date-fns": "^4.1.0",
     "jose": "^6.1.3",

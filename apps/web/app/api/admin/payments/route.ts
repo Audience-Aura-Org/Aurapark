@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import dbConnect from '@/lib/mongo';
 import Payment from '@/lib/models/Payment';
+import '@/lib/models/Booking'; // Ensure Booking model is registered for populate
+import '@/lib/models/Trip';    // Ensure Trip model is registered for deep populate
+import '@/lib/models/Route';   // Ensure Route model is registered for deep populate
+import '@/lib/models/User';    // Ensure User model is registered for populate
+import '@/lib/models/Agency';  // Ensure Agency model is registered for populate
+import '@/lib/models/Shipment';// Ensure Shipment model is registered for populate
 import Shipment from '@/lib/models/Shipment';
 import Booking from '@/lib/models/Booking';
 import { verifyToken } from '@/lib/auth';

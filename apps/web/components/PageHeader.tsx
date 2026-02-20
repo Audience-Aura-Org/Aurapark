@@ -14,11 +14,11 @@ export function PageHeader({ title, subtitle, actions, breadcrumbs }: PageHeader
         <div className="liquid-glass-premium p-6 md:p-8 mb-6 animate-fade-up">
             {/* Accent edge */}
             <div className="absolute left-4 top-8 bottom-8 w-1 rounded-full bg-gradient-to-b from-primary-400/70 via-primary-500 to-primary-400/70 shadow-sm" />
-            
+
             <div className="pl-5 md:pl-6">
                 {/* Breadcrumbs */}
                 {breadcrumbs && breadcrumbs.length > 0 && (
-                    <div className="flex items-center gap-2 mb-4 text-sm font-medium text-neutral-500">
+                    <div className="flex items-center gap-2 mb-4 text-sm font-medium text-neutral-500 print:hidden">
                         {breadcrumbs.map((crumb, index) => (
                             <div key={index} className="flex items-center gap-2">
                                 <span className={index === breadcrumbs.length - 1 ? 'text-primary-600 font-semibold' : 'hover:text-neutral-700 transition-colors'}>
@@ -49,7 +49,7 @@ export function PageHeader({ title, subtitle, actions, breadcrumbs }: PageHeader
 
                     {/* Actions */}
                     {actions && (
-                        <div className="flex items-center gap-3 flex-shrink-0">
+                        <div className="flex items-center gap-3 flex-shrink-0 print:hidden">
                             {actions}
                         </div>
                     )}
