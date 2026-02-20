@@ -9,148 +9,131 @@ import { EmptyState } from '@/components/EmptyState';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
-// ─── Ticket Printer ──────────────────────────────────────────────
+// ─── Ticket Printer ──────────────────────────────────────────────────────────
 function printTicket(booking: any) {
     const trip = booking.tripId || {};
     const route = trip.routeId || {};
-    const passengers = booking.passengers || [];
+    const passengers: any[] = booking.passengers || [];
+
     const deptDate = trip.departureTime
-        ? format(new Date(trip.departureTime), 'EEEE, MMMM d yyyy')
+        ? new Date(trip.departureTime).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
         : 'N/A';
     const deptTime = trip.departureTime
-        ? format(new Date(trip.departureTime), 'HH:mm')
+        ? new Date(trip.departureTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
         : 'N/A';
-    const busPlate = trip.busId?.plateNumber || '';
+    const busPlate = trip.busId?.plateNumber || '—';
+    const agencyName = trip.agencyId?.name || booking.agencyId?.name || 'Transport Agency';
     const bookingDate = booking.createdAt
-        ? format(new Date(booking.createdAt), 'MMM d, yyyy HH:mm')
+        ? new Date(booking.createdAt).toLocaleString()
         : '';
+    const routeName = route.routeName || ((route.origin || '') + (route.destination ? ' → ' + route.destination : '')) || '—';
+    const origin = route.origin || 'ORIGIN';
+    const destination = route.destination || 'DESTINATION';
 
-    const passengersHtml = passengers.map((p: any, i: number) => `
-        <tr>
-            <td style="padding:8px 12px;font-weight:700;color:#111">${i + 1}. ${p.name}</td>
-            <td style="padding:8px 12px;color:#555">${p.idNumber || '—'}</td>
-            <td style="padding:8px 12px;color:#555">${p.seatNumber || (i + 1)}</td>
-        </tr>
-    `).join('');
+    const passengerRows = passengers.map((p: any, i: number) =>
+        '<tr>' +
+        '<td style="padding:8px 12px;font-weight:700;color:#111">' + (i + 1) + '. ' + (p.name || '') + '</td>' +
+        '<td style="padding:8px 12px;color:#555">' + (p.idNumber || '—') + '</td>' +
+        '<td style="padding:8px 12px;color:#555">' + (p.seatNumber || (i + 1)) + '</td>' +
+        '</tr>'
+    ).join('');
 
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8"/>
-  <title>Ticket — ${booking.pnr}</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4f4f4;padding:24px;color:#111}
-    .ticket{max-width:680px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12)}
-    .header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);padding:28px 32px;color:#fff}
-    .header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
-    .agency-name{font-size:22px;font-weight:900;letter-spacing:-.5px}
-    .pnr-box{text-align:right}
-    .pnr-label{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:2px}
-    .pnr-value{font-size:28px;font-weight:900;letter-spacing:4px;font-family:monospace}
-    .route-row{display:flex;align-items:center;gap:12px}
-    .city{font-size:26px;font-weight:900}
-    .arrow{font-size:20px;opacity:.6}
-    .body{padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .field label{font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:4px}
-    .field span{font-size:14px;font-weight:700;color:#111}
-    .divider{grid-column:1/-1;border:none;border-top:2px dashed #e5e7eb;margin:4px 0}
-    .passengers{grid-column:1/-1}
-    .passengers h3{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    thead tr{background:#f9fafb;border-bottom:1px solid #e5e7eb}
-    thead th{padding:8px 12px;text-align:left;font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1px}
-    tbody tr:nth-child(even){background:#f9fafb}
-    .footer{background:#f9fafb;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e5e7eb}
-    .footer-note{font-size:11px;color:#999}
-    .amount{font-size:22px;font-weight:900;color:#1e3a8a}
-    .barcode{font-family:monospace;font-size:24px;letter-spacing:4px;color:#1e3a8a;opacity:.3;font-weight:900;text-align:center;padding:12px 32px;letter-spacing:6px}
-    @media print{body{background:#fff;padding:0}.ticket{box-shadow:none;border-radius:0}}
-  </style>
-</head>
-<body>
-  <div class="ticket">
-    <div class="header">
-      <div class="header-top">
-        <div>
-          <div class="agency-name">${trip.agencyId?.name || 'Transport Agency'}</div>
-          <div style="font-size:11px;opacity:.7;margin-top:4px">E-TICKET / BOARDING PASS</div>
-        </div>
-        <div class="pnr-box">
-          <div class="pnr-label">Booking Ref</div>
-          <div class="pnr-value">${booking.pnr}</div>
-        </div>
-      </div>
-      <div class="route-row">
-        <span class="city">${route.origin || 'ORIGIN'}</span>
-        <span class="arrow">✈</span>
-        <span class="city">${route.destination || 'DEST'}</span>
-      </div>
-    </div>
+    const total = (booking.totalAmount || 0).toLocaleString();
 
-    <div class="body">
-      <div class="field">
-        <label>Departure Date</label>
-        <span>${deptDate}</span>
-      </div>
-      <div class="field">
-        <label>Departure Time</label>
-        <span>${deptTime}</span>
-      </div>
-      <div class="field">
-        <label>Route</label>
-        <span>${route.routeName || route.origin + ' → ' + route.destination || '—'}</span>
-      </div>
-      <div class="field">
-        <label>Bus / Plate</label>
-        <span>${busPlate || '—'}</span>
-      </div>
-      <div class="field">
-        <label>Seats</label>
-        <span>${passengers.length} Passenger${passengers.length > 1 ? 's' : ''}</span>
-      </div>
-      <div class="field">
-        <label>Payment Status</label>
-        <span>${booking.paymentStatus || '—'}</span>
-      </div>
-
-      <hr class="divider"/>
-
-      <div class="passengers">
-        <h3>Passenger List</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>ID / CNI</th>
-              <th>Seat</th>
-            </tr>
-          </thead>
-          <tbody>${passengersHtml}</tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="barcode">|||||||||||||||||||||||||||||||||||||||</div>
-
-    <div class="footer">
-      <div class="footer-note">
-        <div>Booked: ${bookingDate}</div>
-        <div>Contact: ${booking.contactPhone || '—'}</div>
-        <div style="margin-top:4px;color:#3b82f6;font-weight:600">Present this ticket at the boarding gate.</div>
-      </div>
-      <div class="amount">XAF ${(booking.totalAmount || 0).toLocaleString()}</div>
-    </div>
-  </div>
-  <script>window.onload=()=>{window.print();setTimeout(()=>window.close(),800)}</script>
-</body>
-</html>`;
+    const html = [
+        '<!DOCTYPE html>',
+        '<html>',
+        '<head>',
+        '<meta charset="UTF-8">',
+        '<title>Ticket ' + booking.pnr + '</title>',
+        '<style>',
+        '*{box-sizing:border-box;margin:0;padding:0}',
+        'body{font-family:Segoe UI,system-ui,sans-serif;background:#f4f4f4;padding:24px;color:#111}',
+        '.ticket{max-width:680px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12)}',
+        '.hdr{background:linear-gradient(135deg,#1e3a8a,#3b82f6);padding:28px 32px;color:#fff}',
+        '.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}',
+        '.agency{font-size:22px;font-weight:900;letter-spacing:-.5px}',
+        '.pnr-box{text-align:right}',
+        '.pnr-lbl{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:2px}',
+        '.pnr-val{font-size:26px;font-weight:900;font-family:monospace;letter-spacing:4px}',
+        '.route{display:flex;align-items:center;gap:12px}',
+        '.city{font-size:24px;font-weight:900}',
+        '.body{padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:20px}',
+        '.field label{font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:4px}',
+        '.field span{font-size:14px;font-weight:700;color:#111}',
+        '.divider{grid-column:1/-1;border:none;border-top:2px dashed #e5e7eb;margin:4px 0}',
+        '.pax{grid-column:1/-1}',
+        '.pax h3{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}',
+        'table{width:100%;border-collapse:collapse;font-size:13px}',
+        'thead tr{background:#f9fafb;border-bottom:1px solid #e5e7eb}',
+        'thead th{padding:8px 12px;text-align:left;font-size:10px;font-weight:800;color:#999;text-transform:uppercase}',
+        'tbody tr:nth-child(even){background:#f9fafb}',
+        '.ftr{background:#f9fafb;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e5e7eb}',
+        '.ftr-note{font-size:11px;color:#999}',
+        '.amount{font-size:22px;font-weight:900;color:#1e3a8a}',
+        '.barcode{font-family:monospace;font-size:18px;color:#1e3a8a;opacity:.25;font-weight:900;text-align:center;padding:10px 32px;letter-spacing:6px}',
+        '@media print{body{background:#fff;padding:0}.ticket{box-shadow:none;border-radius:0}}',
+        '</style>',
+        '</head>',
+        '<body>',
+        '<div class="ticket">',
+        '  <div class="hdr">',
+        '    <div class="hdr-top">',
+        '      <div>',
+        '        <div class="agency">' + agencyName + '</div>',
+        '        <div style="font-size:11px;opacity:.7;margin-top:4px">E-TICKET / BOARDING PASS</div>',
+        '      </div>',
+        '      <div class="pnr-box">',
+        '        <div class="pnr-lbl">Booking Ref</div>',
+        '        <div class="pnr-val">' + booking.pnr + '</div>',
+        '      </div>',
+        '    </div>',
+        '    <div class="route">',
+        '      <span class="city">' + origin + '</span>',
+        '      <span style="font-size:20px;opacity:.6">&#x2708;</span>',
+        '      <span class="city">' + destination + '</span>',
+        '    </div>',
+        '  </div>',
+        '  <div class="body">',
+        '    <div class="field"><label>Departure Date</label><span>' + deptDate + '</span></div>',
+        '    <div class="field"><label>Departure Time</label><span>' + deptTime + '</span></div>',
+        '    <div class="field"><label>Route</label><span>' + routeName + '</span></div>',
+        '    <div class="field"><label>Bus / Plate</label><span>' + busPlate + '</span></div>',
+        '    <div class="field"><label>Passengers</label><span>' + passengers.length + ' passenger' + (passengers.length !== 1 ? 's' : '') + '</span></div>',
+        '    <div class="field"><label>Payment</label><span>' + (booking.paymentStatus || '—') + '</span></div>',
+        '    <hr class="divider">',
+        '    <div class="pax">',
+        '      <h3>Passenger List</h3>',
+        '      <table>',
+        '        <thead><tr><th>Name</th><th>ID / CNI</th><th>Seat</th></tr></thead>',
+        '        <tbody>' + passengerRows + '</tbody>',
+        '      </table>',
+        '    </div>',
+        '  </div>',
+        '  <div class="barcode">|||||||||||||||||||||||||||||||||||||||</div>',
+        '  <div class="ftr">',
+        '    <div class="ftr-note">',
+        '      <div>Booked: ' + bookingDate + '</div>',
+        '      <div>Contact: ' + (booking.contactPhone || '—') + '</div>',
+        '      <div style="margin-top:4px;color:#3b82f6;font-weight:600">Present this ticket at the boarding gate.</div>',
+        '    </div>',
+        '    <div class="amount">XAF ' + total + '</div>',
+        '  </div>',
+        '</div>',
+        '</body>',
+        '</html>',
+    ].join('\n');
 
     const win = window.open('', '_blank', 'width=750,height=900');
-    if (win) { win.document.write(html); win.document.close(); }
+    if (win) {
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        win.print();
+    }
 }
 
-// ─── Main Page ────────────────────────────────────────────────────
+// ─── Main Page ───────────────────────────────────────────────────────────────
 export default function AgencyBookingsPage() {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -186,7 +169,7 @@ export default function AgencyBookingsPage() {
             if (filters.pnr) qp.append('pnr', filters.pnr);
             if (filters.phone) qp.append('phone', filters.phone);
             if (filters.date) qp.append('date', filters.date);
-            const { data } = await axios.get(`/api/bookings?${qp}`);
+            const { data } = await axios.get('/api/bookings?' + qp.toString());
             setBookings(data.bookings || []);
         } catch (error) {
             console.error('Failed to fetch bookings:', error);
@@ -308,7 +291,11 @@ export default function AgencyBookingsPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <Badge
-                                                variant={booking.status === 'CONFIRMED' ? 'success' : booking.status === 'CANCELLED' ? 'danger' : booking.status === 'REFUNDED' ? 'warning' : 'info'}
+                                                variant={
+                                                    booking.status === 'CONFIRMED' ? 'success' :
+                                                        booking.status === 'CANCELLED' ? 'danger' :
+                                                            booking.status === 'REFUNDED' ? 'warning' : 'info'
+                                                }
                                                 size="sm"
                                             >
                                                 {booking.status}
@@ -320,12 +307,11 @@ export default function AgencyBookingsPage() {
                                                     variant="primary"
                                                     size="sm"
                                                     onClick={() => printTicket(booking)}
-                                                    title="Print boarding ticket"
                                                 >
                                                     🖨 Ticket
                                                 </Button>
                                                 {booking.tripId?._id && (
-                                                    <Link href={`/agency/trips/${booking.tripId._id}`}>
+                                                    <Link href={'/agency/trips/' + booking.tripId._id}>
                                                         <Button variant="glass" size="sm">Trip</Button>
                                                     </Link>
                                                 )}
@@ -356,7 +342,14 @@ export default function AgencyBookingsPage() {
                         <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-400 rounded-full animate-spin" />
                     </div>
                 ) : bookings.length > 0 ? bookings.map((booking) => (
-                    <div key={booking._id} className={`glass-panel p-4 border-l-4 ${booking.status === 'CONFIRMED' ? 'border-l-success-400' : booking.status === 'CANCELLED' ? 'border-l-danger-400' : 'border-l-neutral-300'}`}>
+                    <div
+                        key={booking._id}
+                        className={
+                            'glass-panel p-4 border-l-4 ' +
+                            (booking.status === 'CONFIRMED' ? 'border-l-success-400' :
+                                booking.status === 'CANCELLED' ? 'border-l-danger-400' : 'border-l-neutral-300')
+                        }
+                    >
                         <div className="flex items-start justify-between mb-3">
                             <div>
                                 <span className="font-black text-neutral-900 font-mono text-base">#{booking.pnr}</span>
@@ -372,7 +365,9 @@ export default function AgencyBookingsPage() {
 
                         <div className="text-sm font-bold text-neutral-900 mb-1">
                             {booking.passengers?.[0]?.name || 'Unknown'}
-                            {booking.passengers?.length > 1 && <span className="text-neutral-400 font-normal"> +{booking.passengers.length - 1} more</span>}
+                            {booking.passengers?.length > 1 && (
+                                <span className="text-neutral-400 font-normal"> +{booking.passengers.length - 1} more</span>
+                            )}
                         </div>
                         <div className="text-xs text-neutral-500 mb-1">
                             {booking.tripId?.routeId?.routeName || 'Unknown Route'}
@@ -388,7 +383,7 @@ export default function AgencyBookingsPage() {
                                     🖨 Ticket
                                 </Button>
                                 {booking.tripId?._id && (
-                                    <Link href={`/agency/trips/${booking.tripId._id}`}>
+                                    <Link href={'/agency/trips/' + booking.tripId._id}>
                                         <Button variant="glass" size="sm">Trip</Button>
                                     </Link>
                                 )}

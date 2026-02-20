@@ -50,7 +50,7 @@ export default function AgencyTripDetailPage({ params }: { params: Promise<{ id:
                 getDisplaySeatNumber(passenger.seatNumber),
                 booking.contactPhone,
                 passenger.checkedIn ? 'Checked In' : 'Pending',
-                `$${(booking.totalAmount / booking.passengers.length).toFixed(2)}`
+                `XAF ${(booking.totalAmount / booking.passengers.length).toFixed(0)}`
             ])
         );
 
@@ -66,6 +66,77 @@ export default function AgencyTripDetailPage({ params }: { params: Promise<{ id:
         a.download = `trip-${tripId}-manifest.csv`;
         a.click();
         window.URL.revokeObjectURL(url);
+    };
+
+    const printManifest = () => {
+        if (!trip) return;
+        const deptDate = trip.departureTime
+            ? new Date(trip.departureTime).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : 'N/A';
+        const routeName = trip.routeId?.routeName || 'Unknown Route';
+        const busInfo = (trip.busId?.model || '') + (trip.busId?.plateNumber ? ' — ' + trip.busId.plateNumber : '');
+        const totalPax = bookings.reduce((s: number, b: any) => s + b.passengers.length, 0);
+        const totalRev = bookings.reduce((s: number, b: any) => s + (b.totalAmount || 0), 0);
+
+        const rows = bookings.flatMap((booking: any) =>
+            booking.passengers.map((p: any, i: number) =>
+                '<tr>' +
+                '<td>' + booking.pnr + '</td>' +
+                '<td>' + (p.name || '') + '</td>' +
+                '<td>' + (p.age || '—') + ' / ' + (p.gender || '—') + '</td>' +
+                '<td>' + getDisplaySeatNumber(p.seatNumber) + '</td>' +
+                '<td>' + (booking.contactPhone || '—') + '</td>' +
+                '<td>' + (p.checkedIn ? '&#10003; Checked In' : 'Pending') + '</td>' +
+                '<td style="text-align:right">' + (booking.totalAmount / booking.passengers.length).toLocaleString() + '</td>' +
+                '</tr>'
+            )
+        ).join('');
+
+        const html = [
+            '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+            '<title>Manifest — ' + routeName + '</title>',
+            '<style>',
+            '*{box-sizing:border-box;margin:0;padding:0}',
+            'body{font-family:Segoe UI,system-ui,sans-serif;padding:32px;color:#111;font-size:13px}',
+            'h1{font-size:22px;font-weight:900;margin-bottom:4px}',
+            '.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;padding:16px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb}',
+            '.meta-item label{font-size:9px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}',
+            '.meta-item span{font-size:13px;font-weight:700;color:#111}',
+            'table{width:100%;border-collapse:collapse;margin-top:16px}',
+            'thead tr{background:#1e3a8a;color:#fff}',
+            'thead th{padding:10px 12px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px}',
+            'tbody tr:nth-child(even){background:#f9fafb}',
+            'tbody td{padding:9px 12px;border-bottom:1px solid #e5e7eb}',
+            '.total-row{font-weight:900;background:#f0f9ff;border-top:2px solid #1e3a8a}',
+            '.footer{margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:11px;color:#999;display:flex;justify-content:space-between}',
+            '@media print{body{padding:16px}}',
+            '</style></head><body>',
+            '<h1>Passenger Manifest</h1>',
+            '<div style="color:#555;font-size:13px;margin-bottom:8px">' + routeName + '</div>',
+            '<div class="meta">',
+            '<div class="meta-item"><label>Departure</label><span>' + deptDate + '</span></div>',
+            '<div class="meta-item"><label>Bus / Vehicle</label><span>' + (busInfo || '—') + '</span></div>',
+            '<div class="meta-item"><label>Passengers</label><span>' + totalPax + ' booked</span></div>',
+            '</div>',
+            '<table>',
+            '<thead><tr><th>PNR</th><th>Passenger</th><th>Age / Gender</th><th>Seat</th><th>Contact</th><th>Check-in</th><th style="text-align:right">Fare (XAF)</th></tr></thead>',
+            '<tbody>' + rows + '</tbody>',
+            '<tfoot><tr class="total-row"><td colspan="6" style="padding:10px 12px;font-size:12px">Total Revenue</td><td style="padding:10px 12px;text-align:right;font-size:14px">XAF ' + totalRev.toLocaleString() + '</td></tr></tfoot>',
+            '</table>',
+            '<div class="footer">',
+            '<span>Generated: ' + new Date().toLocaleString() + '</span>',
+            '<span>Trip ID: ' + (tripId || '—') + '</span>',
+            '</div>',
+            '</body></html>',
+        ].join('\n');
+
+        const win = window.open('', '_blank', 'width=900,height=700');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+            win.focus();
+            win.print();
+        }
     };
 
     const getStatusColor = (status: string) => {
@@ -203,11 +274,11 @@ export default function AgencyTripDetailPage({ params }: { params: Promise<{ id:
                             </svg>
                             Export CSV
                         </Button>
-                        <Button variant="glass" onClick={() => window.print()}>
+                        <Button variant="glass" onClick={printManifest}>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
-                            Print
+                            Print Manifest
                         </Button>
                     </div>
                 </div>
