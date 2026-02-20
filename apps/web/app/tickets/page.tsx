@@ -59,7 +59,7 @@ function printUserTicket(booking: any) {
                     </div>
                     <div style="text-align:right">
                         <div class="label">Assigned Seat</div>
-                        <div style="font-size:32px;font-weight:900;color:#1e3a8a;line-height:1">${displaySeat}</div>
+                        <div style="font-size:32px;font-weight:900;color:#15803d;line-height:1">${displaySeat}</div>
                     </div>
                 </div>
 
@@ -90,7 +90,7 @@ function printUserTicket(booking: any) {
                 </div>
                 <div style="text-align:right">
                     <div>Contact: ${booking.contactPhone || '—'}</div>
-                    <div style="margin-top:4px;color:#3b82f6;font-weight:bold">Present at boarding gate</div>
+                    <div style="margin-top:4px;color:#15803d;font-weight:bold">Present at boarding gate</div>
                 </div>
             </div>
         </div>
@@ -107,16 +107,16 @@ function printUserTicket(booking: any) {
             * { box-sizing: border-box; margin: 0; padding: 0; }
             body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; padding: 40px 20px; color: #111; }
             .ticket { max-width: 700px; margin: 0 auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
-            .ticket-header { padding: 30px 40px; border-bottom: 2px dashed #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+            .ticket-header { padding: 30px 40px; border-bottom: 2px dashed #90ee90; display: flex; justify-content: space-between; align-items: center; background: #90ee904d; color: #111; }
             .logo { height: 36px; object-fit: contain; }
             .ticket-body { padding: 30px 40px; }
-            .route-display { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 24px; border: 1px solid #f1f5f9; }
+            .route-display { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #90ee901a; border-radius: 12px; margin-bottom: 24px; border: 1px solid #90ee904d; }
             .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
             .label { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
             .value { font-size: 14px; font-weight: 800; color: #111; }
             .separator { height: 1px; border-top: 2px dashed #e5e7eb; margin: 24px 0; }
-            .barcode { font-family: monospace; font-size: 28px; letter-spacing: 6px; color: #ccc; text-align: center; padding: 20px 40px; border-top: 2px dashed #e5e7eb; border-bottom: 1px solid #e5e7eb; background: #fafafa; }
-            .ticket-footer { padding: 20px 40px; background: #f8fafc; display: flex; justify-content: space-between; font-size: 11px; color: #666; }
+            .barcode { font-family: monospace; font-size: 28px; letter-spacing: 6px; color: #90ee90; text-align: center; padding: 20px 40px; border-top: 2px dashed #e5e7eb; border-bottom: 1px solid #e5e7eb; background: #fafafa; }
+            .ticket-footer { padding: 20px 40px; background: #90ee904d; display: flex; justify-content: space-between; font-size: 11px; color: #333; }
             .page-break { page-break-after: always; height: 40px; }
             @media print {
                 body { background: #fff; padding: 0; }

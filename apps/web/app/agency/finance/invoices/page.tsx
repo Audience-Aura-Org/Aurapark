@@ -39,11 +39,11 @@ export default function AgencyFinanceInvoicesPage() {
                     body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; color: #111; }
                     .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
                     .logo { font-size: 24px; font-weight: 900; color: #000; }
-                    .badge { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+                    .badge { background: #90ee904d; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
                     table { width: 100%; border-collapse: collapse; margin-top: 24px; }
-                    th { background: #f5f5f5; text-align: left; padding: 10px 14px; font-size: 11px; text-transform: uppercase; }
+                    th { background: #90ee904d; text-align: left; padding: 10px 14px; font-size: 11px; text-transform: uppercase; }
                     td { padding: 10px 14px; border-bottom: 1px solid #eee; font-size: 13px; }
-                    .total { background: #f0fdf4; font-weight: 900; font-size: 15px; }
+                    .total { background: #90ee904d; font-weight: 900; font-size: 15px; }
                     .footer { margin-top: 40px; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 16px; }
                 </style>
             </head>
