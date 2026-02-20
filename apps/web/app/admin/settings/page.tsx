@@ -19,6 +19,7 @@ export default function AdminSettingsPage() {
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
     useEffect(() => {
         fetchSettings();
@@ -39,16 +40,21 @@ export default function AdminSettingsPage() {
         setSaving(true);
         try {
             await axios.patch('/api/admin/settings', settings);
-            alert('Platform settings saved successfully!');
+            setToast({ type: 'success', msg: 'Platform settings saved successfully!' });
         } catch (error) {
             console.error('Failed to save settings:', error);
-            alert('Error saving settings.');
+            setToast({ type: 'error', msg: 'Error saving settings. Please try again.' });
         } finally {
             setSaving(false);
+            setTimeout(() => setToast(null), 4000);
         }
     };
 
-    if (loading) return <div className="p-20 text-center">Loading...</div>;
+    if (loading) return (
+        <div className="flex items-center justify-center p-12">
+            <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-400 rounded-full animate-spin"></div>
+        </div>
+    );
 
     return (
         <div className="space-y-8 max-w-5xl">
@@ -57,7 +63,17 @@ export default function AdminSettingsPage() {
                 subtitle="Manage core business rules, fees, and system-wide automation"
                 breadcrumbs={['Admin', 'Settings']}
                 actions={
-                    <Button variant="primary" onClick={handleSave} isLoading={saving}>Save Changes</Button>
+                    <div className="flex items-center gap-3">
+                        {toast && (
+                            <span className={`text-sm font-bold flex items-center gap-1 ${toast.type === 'success' ? 'text-success-600' : 'text-danger-600'}`}>
+                                {toast.type === 'success'
+                                    ? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                                    : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>}
+                                {toast.msg}
+                            </span>
+                        )}
+                        <Button variant="primary" onClick={handleSave} isLoading={saving}>Save Changes</Button>
+                    </div>
                 }
             />
 

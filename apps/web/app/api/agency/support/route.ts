@@ -47,3 +47,31 @@ export async function PATCH(req: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+export async function POST(req: NextRequest) {
+    try {
+        await mongoConnection();
+        const session = await getServerSession();
+        if (!session?.agencyId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        const { subject, description, priority } = await req.json();
+
+        if (!subject || !description) {
+            return NextResponse.json({ error: 'Subject and description are required' }, { status: 400 });
+        }
+
+        const ticket = await SupportTicket.create({
+            agencyId: session.agencyId,
+            userId: session.userId,
+            subject,
+            description,
+            category: 'AGENCY',
+            priority: priority || 'MEDIUM',
+            status: 'OPEN',
+        });
+
+        return NextResponse.json({ ticket }, { status: 201 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}

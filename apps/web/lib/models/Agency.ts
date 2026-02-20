@@ -57,6 +57,11 @@ const AgencySchema: Schema = new Schema({
         tripOverrides: {
             allowManualBooking: { type: Boolean, default: true },
             requireApprovalForCancellation: { type: Boolean, default: false }
+        },
+        branding: {
+            primaryColor: { type: String, default: '#3b82f6' },
+            accentColor: { type: String, default: '#fbbf24' },
+            ticketHeadline: { type: String, default: 'Safe, Reliable, Swift.' },
         }
     }
 }, { timestamps: true });
