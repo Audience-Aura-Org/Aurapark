@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { serialize } from 'cookie';
 
 export async function POST() {
-    const cookieStore = await cookies();
-    cookieStore.delete('token');
-    return NextResponse.json({ success: true });
+    const response = NextResponse.json({ success: true, message: 'Logged out' });
+
+    // Explicitly destroy the cookie across the entire domain
+    response.headers.set('Set-Cookie', serialize('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: -1, // Expire immediately
+        path: '/'
+    }));
+
+    return response;
 }
