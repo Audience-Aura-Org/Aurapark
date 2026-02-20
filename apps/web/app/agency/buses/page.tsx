@@ -78,7 +78,7 @@ export default function AgencyBusesPage() {
                     seats: Array.from({ length: capacityNum }, (_, i) => {
                         const row = Math.floor(i / 4) + 1;
                         const column = (i % 4) + 1;
-                        return { seatNumber: `${row}${String.fromCharCode(64 + column)}`, type: 'STANDARD', row, column, isAvailable: true };
+                        return { seatNumber: `${i + 1}`, type: 'STANDARD', row, column, isAvailable: true };
                     })
                 }
             };
