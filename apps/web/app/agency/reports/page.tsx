@@ -6,6 +6,15 @@ import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
 
+function downloadCSV(rows: any[][], filename: string) {
+    const csv = rows.map(r => r.map((v: any) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+}
+
 export default function AgencyReportsPage() {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -31,14 +40,35 @@ export default function AgencyReportsPage() {
         </div>
     );
 
+    const handleExportCSV = () => {
+        if (!data) return;
+        const rows: any[][] = [['Report Type', 'Agency Reports', 'Generated', new Date().toLocaleDateString()], []];
+        rows.push(['FINANCIALS'], ['Total Revenue', data.totalRevenue, 'Total Bookings', data.totalBookings, 'Occupancy Rate', `${data.occupancyRate}%`], []);
+        if (data.routeRevenue?.length > 0) {
+            rows.push(['ROUTE REVENUE'], ['Route', 'Revenue (XAF)', 'Trips']);
+            data.routeRevenue.forEach((r: any) => rows.push([r._id || 'Unknown', r.revenue, r.count || '']));
+            rows.push([]);
+        }
+        if (data.monthlyRevenue?.length > 0) {
+            rows.push(['MONTHLY REVENUE'], ['Month', 'Revenue (XAF)']);
+            data.monthlyRevenue.forEach((m: any) => rows.push([m._id, m.revenue]));
+            rows.push([]);
+        }
+        if (data.fuelCosts?.length > 0) {
+            rows.push(['FUEL COSTS'], ['Month', 'Volume (L)', 'Total Cost (XAF)']);
+            data.fuelCosts.forEach((c: any) => rows.push([c._id, c.volume?.toFixed(1), c.totalCost]));
+        }
+        downloadCSV(rows, `agency-report-${new Date().toISOString().slice(0, 10)}.csv`);
+    };
+
     return (
         <div className="space-y-8">
             <PageHeader
-                title="Business Intelligence"
+                title="Business Reports"
                 subtitle="Financial performance, operational efficiency, and growth analytics."
                 breadcrumbs={['Agency', 'Reports']}
                 actions={
-                    <Button variant="glass">Export CSV</Button>
+                    <Button variant="glass" onClick={handleExportCSV} disabled={!data}>Export CSV</Button>
                 }
             />
 
