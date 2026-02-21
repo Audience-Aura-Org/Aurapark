@@ -27,10 +27,15 @@ export async function POST(req: Request) {
         // If agency staff, find their agencyId
         let agencyId = null;
         if (user.role === 'AGENCY_STAFF') {
-            const Agency = (await import('@/lib/models/Agency')).default;
-            const agency = await Agency.findOne({ ownerId: user._id });
-            if (agency) {
-                agencyId = agency._id.toString();
+            try {
+                const Agency = (await import('@/lib/models/Agency')).default;
+                const agency = await Agency.findOne({ ownerId: user._id });
+                if (agency) {
+                    agencyId = agency._id.toString();
+                }
+            } catch (agencyError) {
+                console.warn('Warning: Could not fetch agency info:', agencyError);
+                // Continue without agency info
             }
         }
 
@@ -65,7 +70,19 @@ export async function POST(req: Request) {
         return response;
 
     } catch (error: any) {
-        console.error('Login error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error('Login error:', error.message || error);
+        
+        // Provide more specific error messages
+        if (error.message?.includes('connect')) {
+            return NextResponse.json(
+                { error: 'Database connection failed. Please try again.' },
+                { status: 503 }
+            );
+        }
+        
+        return NextResponse.json(
+            { error: 'Internal Server Error', details: process.env.NODE_ENV === 'development' ? error.message : undefined },
+            { status: 500 }
+        );
     }
 }

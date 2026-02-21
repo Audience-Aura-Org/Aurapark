@@ -21,45 +21,43 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Clone the request headers
-  const requestHeaders = new Headers(request.headers);
-
-  // Add CORS headers for API routes
+  // Handle CORS for API routes
   if (pathname.startsWith('/api/')) {
-    const response = NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-
-    // Check if origin is allowed
-    if (origin && ALLOWED_ORIGINS.includes(origin)) {
-      response.headers.set('Access-Control-Allow-Origin', origin);
-      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-      response.headers.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, x-user-id, x-client-id'
-      );
-      response.headers.set('Access-Control-Allow-Credentials', 'true');
-      response.headers.set('Access-Control-Max-Age', '86400');
-    }
-
     // Handle preflight requests
     if (request.method === 'OPTIONS') {
-      return new NextResponse(null, {
-        status: 204,
-        headers: response.headers,
-      });
+      let response: NextResponse;
+      
+      // Check if origin is allowed
+      if (origin && ALLOWED_ORIGINS.includes(origin)) {
+        response = new NextResponse(null, {
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': origin,
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-user-id, x-client-id',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Max-Age': '86400',
+          },
+        });
+      } else {
+        response = new NextResponse(null, { status: 204 });
+      }
+      
+      return response;
     }
 
-    return response;
+    // For actual API requests, add CORS headers to the response
+    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+      const response = NextResponse.next();
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id, x-client-id');
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
+      return response;
+    }
   }
 
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
 
 // Configure which routes to run middleware on
