@@ -3,9 +3,48 @@ import * as jose from 'jose';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-this';
 
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://aurapark-web.vercel.app',
+    'https://www.aurapark-web.vercel.app',
+];
+
+function handleCors(request: NextRequest, response: NextResponse): NextResponse {
+    const origin = request.headers.get('origin');
+    const pathname = request.nextUrl.pathname;
+
+    // Add CORS headers for API routes
+    if (pathname.startsWith('/api/')) {
+        if (origin && ALLOWED_ORIGINS.includes(origin)) {
+            response.headers.set('Access-Control-Allow-Origin', origin);
+            response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id, x-client-id');
+            response.headers.set('Access-Control-Allow-Credentials', 'true');
+        }
+    }
+
+    return response;
+}
+
 export default async function proxy(request: NextRequest) {
     const token = request.cookies.get('token')?.value;
     const pathname = request.nextUrl.pathname;
+    const origin = request.headers.get('origin');
+
+    // Handle CORS preflight requests for API routes
+    if (pathname.startsWith('/api/') && request.method === 'OPTIONS') {
+        const response = new NextResponse(null, { status: 204 });
+        if (origin && ALLOWED_ORIGINS.includes(origin)) {
+            response.headers.set('Access-Control-Allow-Origin', origin);
+            response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id, x-client-id');
+            response.headers.set('Access-Control-Allow-Credentials', 'true');
+            response.headers.set('Access-Control-Max-Age', '86400');
+        }
+        return response;
+    }
 
     // 1. Check for authentication
     const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -21,7 +60,10 @@ export default async function proxy(request: NextRequest) {
         if (isAdminPath || isAgencyPath || isDriverPath || isUserPath) {
             return NextResponse.redirect(new URL('/login', request.url));
         }
-        return NextResponse.next();
+        
+        let response = NextResponse.next();
+        response = handleCors(request, response);
+        return response;
     }
 
     try {
@@ -48,7 +90,9 @@ export default async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL('/', request.url));
         }
 
-        return NextResponse.next();
+        let response = NextResponse.next();
+        response = handleCors(request, response);
+        return response;
     } catch (error) {
         // Invalid token
         if (isAdminPath || isAgencyPath || isDriverPath || isUserPath) {
@@ -56,7 +100,10 @@ export default async function proxy(request: NextRequest) {
             response.cookies.delete('token');
             return response;
         }
-        return NextResponse.next();
+        
+        let response = NextResponse.next();
+        response = handleCors(request, response);
+        return response;
     }
 }
 
