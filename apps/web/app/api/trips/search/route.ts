@@ -8,16 +8,21 @@ import '@/lib/models/Agency';
 
 export async function GET(req: Request) {
     try {
+        console.log('Received request:', req.url);
+
         const { searchParams } = new URL(req.url);
         const fromStopName = searchParams.get('from');
         const toStopName = searchParams.get('to');
         const dateStr = searchParams.get('date');
         const passengers = parseInt(searchParams.get('passengers') || '1');
 
+        console.log('Parsed parameters:', { fromStopName, toStopName, dateStr, passengers });
+
         if (!fromStopName && !toStopName && !dateStr) {
-            // "Explore" mode: Return upcoming trips
-            // "Explore" mode: Return recently created trips (prioritizing user's new data)
+            console.log('Explore mode: Fetching upcoming trips');
             await dbConnect();
+            console.log('Database connected');
+
             const trips = await Trip.find({
                 departureTime: { $gte: new Date() },
                 status: 'SCHEDULED',
@@ -41,7 +46,8 @@ export async function GET(req: Request) {
                 .sort({ createdAt: -1 })
                 .limit(20);
 
-            // Filter out trips where critical data is missing (or agency is not active/is mock)
+            console.log('Fetched trips:', trips);
+
             const filteredTrips = trips.filter(t =>
                 t.agencyId &&
                 t.routeId &&
@@ -49,38 +55,45 @@ export async function GET(req: Request) {
                 t.agencyId.name !== 'Ocean Lines'
             );
 
+            console.log('Filtered trips:', filteredTrips);
+
             return NextResponse.json({ trips: filteredTrips }, { status: 200 });
         }
 
         if (!fromStopName || !toStopName || !dateStr) {
+            console.error('Missing search parameters:', { fromStopName, toStopName, dateStr });
             return NextResponse.json({ error: 'Missing search parameters' }, { status: 400 });
         }
 
         await dbConnect();
+        console.log('Database connected');
 
-        // 1. Find the stops to get IDs
         const stops = await Stop.find({
             name: { $in: [new RegExp(fromStopName, 'i'), new RegExp(toStopName, 'i')] }
         });
 
+        console.log('Fetched stops:', stops);
+
         const fromStop = stops.find(s => s.name.toLowerCase().includes(fromStopName.toLowerCase()));
         const toStop = stops.find(s => s.name.toLowerCase().includes(toStopName.toLowerCase()));
 
+        console.log('Matched stops:', { fromStop, toStop });
+
         if (!fromStop || !toStop) {
+            console.warn('No matching stops found');
             return NextResponse.json({ trips: [] });
         }
 
-        // 2. Find routes containing both stops in the correct order
-        // A route is valid if:
-        // - fromStop is originStopId AND (toStop is destinationStopId OR toStop is in stops)
-        // - fromStop is in stops AND (toStop is destinationStopId OR toStop is in stops LATER)
-
         const routes = await Route.find({
             $or: [
-                { originStopId: fromStop._id, $or: [{ destinationStopId: toStop._id }, { stops: toStop._id }] },
-                { stops: fromStop._id, $or: [{ destinationStopId: toStop._id }, { stops: toStop._id }] }
+                { originStopId: fromStop._id, destinationStopId: toStop._id },
+                { originStopId: fromStop._id, stops: toStop._id },
+                { stops: fromStop._id, destinationStopId: toStop._id },
+                { stops: { $all: [fromStop._id, toStop._id] } }
             ]
         });
+
+        console.log('Fetched routes:', routes);
 
         const validRoutes = routes.filter(r => {
             const stopIds = [
@@ -95,15 +108,19 @@ export async function GET(req: Request) {
             return fromIdx !== -1 && toIdx !== -1 && fromIdx < toIdx;
         });
 
+        console.log('Valid routes:', validRoutes);
+
         if (validRoutes.length === 0) {
+            console.warn('No valid routes found');
             return NextResponse.json({ trips: [] });
         }
 
-        // 3. Find trips for these routes on the specific date
         const startOfDay = new Date(dateStr);
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date(dateStr);
         endOfDay.setHours(23, 59, 59, 999);
+
+        console.log('Date range:', { startOfDay, endOfDay });
 
         const trips = await Trip.find({
             routeId: { $in: validRoutes.map(r => r._id) },
@@ -125,13 +142,16 @@ export async function GET(req: Request) {
             })
             .populate('busId', 'busNumber busModel type amenities');
 
-        // Filter out trips where critical data is missing or agency is inactive/mock
+        console.log('Fetched trips for valid routes:', trips);
+
         const finalTrips = trips.filter(t =>
             t.agencyId &&
             t.routeId &&
             t.busId &&
             t.agencyId.name !== 'Ocean Lines'
         );
+
+        console.log('Final filtered trips:', finalTrips);
 
         return NextResponse.json({ trips: finalTrips }, { status: 200 });
 

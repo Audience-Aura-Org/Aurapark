@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import './dark-mode-overrides.css';
 
 @tailwind base;
 @tailwind components;
@@ -6,20 +7,29 @@
 
 @layer base {
   html {
-    font-size: 87.5%;
-    /* Base 14px - zoomed out look at 100% screen zoom */
-  }
-
-  * {
-    @apply border-neutral-200;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-gradient-green-soft text-neutral-800 font-sans antialiased overflow-x-hidden;
+    @apply font-sans antialiased;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
-  /* Custom Scrollbar */
+  /* Dark Mode Base */
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  :root.dark body {
+    @apply bg-neutral-950 text-white;
+    background-image: 
+      radial-gradient(at 40% 20%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(34, 197, 94, 0.03) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, rgba(59, 130, 246, 0.03) 0px, transparent 50%);
+  }
+
+  /* Scrollbar - Light */
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -30,85 +40,122 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary-300 rounded-full;
-    transition: background 0.2s;
+    @apply bg-primary-300 rounded-full transition-colors;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary-400;
   }
+
+  /* Scrollbar - Dark */
+  :root.dark ::-webkit-scrollbar-track {
+    @apply bg-neutral-900;
+  }
+
+  :root.dark ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-700 rounded-full;
+  }
+
+  :root.dark ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-600;
+  }
 }
 
 @layer components {
-
-  /* Frosted Glass Panel */
+  /* Glass Components - Light */
   .glass-panel {
-    @apply bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl;
+    @apply bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl;
   }
 
   .glass-panel-strong {
-    @apply bg-white/80 backdrop-blur-2xl border border-white/70 shadow-glass-lg rounded-3xl;
+    @apply bg-white/80 backdrop-blur-2xl border border-white/70 rounded-3xl;
   }
 
   .glass-card {
-    @apply bg-white/70 backdrop-blur-lg border border-white/60 shadow-float rounded-2xl transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-1;
+    @apply bg-white/70 backdrop-blur-lg border border-white/60 rounded-2xl;
   }
 
-  /* Premium Liquid Glass - for primary header cards */
   .liquid-glass-premium {
-    @apply relative overflow-hidden rounded-3xl;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.25) 100%);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow:
-      0 8px 32px rgba(31, 38, 135, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6),
-      0 1px 2px rgba(0, 0, 0, 0.04);
+    @apply rounded-3xl;
   }
 
-  .liquid-glass-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-    opacity: 0.8;
+  /* Glass Components - Dark */
+  :root.dark .glass-panel {
+    @apply bg-neutral-900/60 border-neutral-700/50;
   }
 
-  /* Button Variants */
+  :root.dark .glass-panel-strong {
+    @apply bg-neutral-800/80 border-neutral-600/70;
+  }
+
+  :root.dark .glass-card {
+    @apply bg-neutral-900/70 border-neutral-700/60;
+  }
+
+  :root.dark .liquid-glass-premium {
+    background: linear-gradient(135deg, rgba(23, 23, 23, 0.4) 0%, rgba(23, 23, 23, 0.15) 50%, rgba(45, 45, 45, 0.25) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-400 text-neutral-800 font-bold rounded-2xl shadow-inner-glow transition-all duration-200 hover:bg-primary-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-200;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-400 text-neutral-800 font-bold rounded-2xl transition-all duration-200 hover:bg-primary-300 hover:scale-105;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent-400 text-white font-bold rounded-2xl shadow-inner-glow-orange transition-all duration-200 hover:bg-accent-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-accent-200 animate-pop;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent-400 text-white font-bold rounded-2xl transition-all duration-200 hover:bg-accent-500 hover:scale-105;
   }
 
   .btn-glass {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 glass-panel font-semibold text-neutral-700 transition-all duration-200 hover:bg-white/80 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-200;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 glass-panel font-semibold text-neutral-700 transition-all duration-200 hover:bg-white/80 hover:scale-105;
   }
 
-  /* Input Styles */
+  :root.dark .btn-glass {
+    @apply text-white hover:bg-neutral-700/80;
+  }
+
+  /* Inputs */
   .input-glass {
-    @apply w-full px-5 py-4 glass-panel text-neutral-800 placeholder-neutral-400 font-medium text-base transition-all duration-200 focus:outline-none focus:bg-white/80 focus:border-primary-400 focus:ring-4 focus:ring-primary-100;
+    @apply w-full px-5 py-4 glass-panel text-neutral-800 placeholder-neutral-400 font-medium transition-all duration-200 focus:outline-none focus:bg-white/80 focus:border-primary-400;
   }
 
-  /* Prevent iOS zoom on focus */
-  @media screen and (max-width: 768px) {
+  :root.dark .input-glass {
+    @apply bg-neutral-900/60 border-neutral-700/50 text-white placeholder-neutral-400 focus:bg-neutral-800/70 focus:border-blue-500/60;
+  }
 
-    input,
-    select,
-    textarea {
-      font-size: 16px !important;
-    }
+  .input-error {
+    @apply border-red-400 focus:border-red-500;
+  }
+
+  :root.dark .input-error {
+    @apply border-red-500 focus:border-red-500;
+  }
+
+  .input-success {
+    @apply border-green-400 focus:border-green-500;
+  }
+
+  :root.dark .input-success {
+    @apply border-green-500 focus:border-green-500;
+  }
+
+  /* Focus States */
+  :focus-visible {
+    @apply outline-none ring-4 ring-primary-400;
+  }
+
+  :root.dark :focus-visible {
+    @apply ring-blue-500;
   }
 }
 
 @layer utilities {
-
   /* Text Gradients */
   .text-gradient-green {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400;
@@ -118,7 +165,7 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-500 to-accent-400;
   }
 
-  /* Background Utilities */
+  /* Mesh Background */
   .bg-mesh-green {
     background-image:
       radial-gradient(at 40% 20%, rgba(144, 238, 144, 0.3) 0px, transparent 50%),
@@ -130,183 +177,49 @@
 
   /* Floating Effect */
   .floating {
-    @apply shadow-float;
+    @apply transition-transform duration-300;
   }
 
-  /* Hover Effects */
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-2;
-  }
-
-  .hover-glow-green {
-    transition: box-shadow 0.3s ease;
-  }
-
-  .hover-glow-green:hover {
-    box-shadow: 0 0 30px rgba(144, 238, 144, 0.4);
-  }
-
-  .hover-glow-orange {
-    transition: box-shadow 0.3s ease;
-  }
-
-  .hover-glow-orange:hover {
-    box-shadow: 0 0 30px rgba(255, 140, 0, 0.4);
-  }
-
-  /* Glass Bubble (for seats) */
-  .glass-bubble {
-    @apply w-12 h-12 rounded-2xl bg-white/40 backdrop-blur-md border-2 border-white/60 shadow-glass transition-all duration-200 cursor-pointer hover:bg-white/60 hover:scale-110;
-  }
-
-  .glass-bubble-selected {
-    @apply w-12 h-12 rounded-2xl bg-accent-400 border-2 border-accent-500 shadow-inner-glow-orange animate-pop cursor-pointer;
-  }
-
-  .glass-bubble-occupied {
-    @apply w-12 h-12 rounded-2xl bg-neutral-300/50 backdrop-blur-md border-2 border-neutral-400/60 cursor-not-allowed opacity-50;
+    @apply hover:-translate-y-2 transition-transform duration-300;
   }
 
   /* Container */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-
-  /* Safe area for bottom nav on mobile */
-  .safe-bottom-nav {
-    @apply pb-32 lg:pb-0;
-  }
-}
-
-/* Shimmer Effect */
-.shimmer {
-  background: linear-gradient(90deg, transparent, rgba(144, 238, 144, 0.2), transparent);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
 }
 
 /* Selection */
 ::selection {
-  @apply bg-primary-200 text-primary-900;
+  @apply bg-primary-200 text-neutral-900;
 }
 
-/* Frosted Glass Overlay for Images */
-.image-glass-overlay {
-  position: relative;
+:root.dark ::selection {
+  @apply bg-blue-600 text-white;
 }
 
-.image-glass-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
-  backdrop-filter: blur(2px);
-  border-radius: inherit;
-}
-
-/* ===================== PRINT STYLES ===================== */
-@media print {
-
-  /* ── 1. KILL ALL ANIMATIONS (critical — prevents white page from opacity:0 stuck state) */
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    animation-delay: 0s !important;
-    animation-duration: 0s !important;
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  /* ── 2. BASE: white page, black text */
-  html,
-  body {
-    background: white !important;
-    background-image: none !important;
-    color: #111 !important;
-    font-size: 11pt !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* ── 3. Force ALL text dark (overrides text-white, text-gray-*, etc.) */
+/* Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
   * {
-    color: #111 !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    border-color: #ccc !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile Touch Targets */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  button {
+    min-height: 44px;
   }
 
-  /* ── 4. Hide sidebar, nav, bottom bar, overlays */
-  aside,
-  nav,
-  header,
-  footer,
-  [data-sidebar],
-  [class*="bottom-nav"],
-  [class*="safe-bottom-nav"],
-  [class*="overlay"],
-  [class*="mobile-menu"],
-  [class*="backdrop"] {
-    display: none !important;
-  }
-
-  /* ── 5. Remove layout offsets introduced by sidebar */
-  main,
-  [class*="lg:pl-"],
-  [class*="lg:ml-"] {
-    padding-left: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    margin-left: 0 !important;
-    margin-top: 0 !important;
-    min-height: unset !important;
-    max-width: 100% !important;
-  }
-
-  /* ── 6. Table borders for readability */
-  table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-
-  th,
-  td {
-    border: 1px solid #aaa !important;
-    padding: 6px 10px !important;
-    color: #000 !important;
-    background-color: white !important;
-  }
-
-  thead th {
-    background-color: #e8e8e8 !important;
-    font-weight: bold !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  tr:nth-child(even) td {
-    background-color: #f5f5f5 !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  /* ── 7. Ticket: keep each on its own page */
-  .ticket-print {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    border: 2px solid #555 !important;
-    padding: 1.5cm !important;
-    margin-bottom: 1cm !important;
-    background-color: white !important;
-  }
-
-  /* ── 8. Page break utility */
-  .print-page-break {
-    page-break-before: always;
-    break-before: page;
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 }

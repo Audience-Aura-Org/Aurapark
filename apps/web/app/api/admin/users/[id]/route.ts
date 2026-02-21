@@ -7,9 +7,10 @@ import { verifyToken } from '@/lib/auth';
 // PATCH /api/admin/users/[id] - Update user (admin only)
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const cookieStore = await cookies();
         const tokenToken = cookieStore.get('token');
         const authToken = cookieStore.get('auth_token');
@@ -25,7 +26,7 @@ export async function PATCH(
         }
 
         const { name, email, role, phone } = await req.json();
-        const userId = params.id;
+        const userId = id;
 
         await dbConnect();
 
@@ -49,9 +50,10 @@ export async function PATCH(
 // DELETE /api/admin/users/[id] - Delete user (admin only)
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const cookieStore = await cookies();
         const tokenToken = cookieStore.get('token');
         const authToken = cookieStore.get('auth_token');
@@ -66,7 +68,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        const userId = params.id;
+        const userId = id;
 
         await dbConnect();
 

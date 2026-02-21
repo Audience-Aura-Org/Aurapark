@@ -6,6 +6,7 @@ const config: Config = {
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
@@ -13,32 +14,37 @@ const config: Config = {
                 background: "#F0FFF4",
                 foreground: "#1A202C",
 
-                // Primary - Light Green
+                // Premium colors for dark mode
+                'dark-bg': '#0F172A',
+                'dark-bg-secondary': '#1E293B',
+                'dark-fg': '#F8FAFC',
+
+                // Primary - Emerald Green (Premium)
                 primary: {
                     50: '#F0FFF4',
                     100: '#C6F6D5',
                     200: '#9AE6B4',
                     300: '#68D391',
-                    400: '#90EE90', // Main light green
-                    500: '#48BB78',
-                    600: '#38A169',
-                    700: '#2F855A',
-                    800: '#276749',
-                    900: '#22543D'
+                    400: '#10B981', // Premium emerald green
+                    500: '#059669',
+                    600: '#047857',
+                    700: '#065F46',
+                    800: '#064E3B',
+                    900: '#022C1D'
                 },
 
-                // Accent - Vibrant Orange
+                // Accent - Premium Gold
                 accent: {
-                    50: '#FFF5EB',
-                    100: '#FFE5CC',
-                    200: '#FFCC99',
-                    300: '#FFB366',
-                    400: '#FF8C00', // Main vibrant orange
-                    500: '#FF7A00',
-                    600: '#E66A00',
-                    700: '#CC5E00',
-                    800: '#B35200',
-                    900: '#994600'
+                    50: '#FFFBEB',
+                    100: '#FEF3C7',
+                    200: '#FDE68A',
+                    300: '#FCD34D',
+                    400: '#FBBF24', // Premium gold
+                    500: '#F59E0B',
+                    600: '#D97706',
+                    700: '#B45309',
+                    800: '#92400E',
+                    900: '#78350F'
                 },
 
                 // Success - Soft Green
@@ -120,6 +126,17 @@ const config: Config = {
                 '2xl': '24px',
                 '3xl': '32px',
                 '4xl': '40px'
+            },
+            spacing: {
+                'xs': '4px',
+                'sm': '8px',
+                'md': '16px',
+                'lg': '24px',
+                'xl': '32px',
+                '2xl': '40px',
+                '3xl': '48px',
+                '4xl': '56px',
+                '5xl': '64px'
             },
             boxShadow: {
                 'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',

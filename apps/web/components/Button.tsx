@@ -25,18 +25,18 @@ export function Button({
     as: Component = 'button',
     ...props
 }: ButtonProps) {
-    const baseStyles = 'inline-flex items-center justify-center gap-2 font-bold rounded-2xl transition-all duration-200 focus:outline-none focus:ring-4 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles = 'inline-flex items-center justify-center gap-2 font-bold rounded-2xl transition-all duration-200 focus:outline-none focus:ring-4 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95';
 
     const variants = {
-        primary: 'bg-primary-400 text-neutral-800 shadow-inner-glow hover:bg-primary-300 hover:scale-105 focus:ring-primary-200',
-        accent: 'bg-accent-400 text-white shadow-inner-glow-orange hover:bg-accent-500 hover:scale-105 focus:ring-accent-200 animate-pop',
-        glass: 'glass-panel text-neutral-700 font-semibold hover:bg-white/80 hover:scale-105 focus:ring-primary-200',
-        danger: 'bg-danger-500 text-white shadow-soft hover:bg-danger-600 hover:scale-105 focus:ring-danger-200',
-        success: 'bg-success-500 text-white shadow-soft hover:bg-success-600 hover:scale-105 focus:ring-success-200',
-        secondary: 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300 hover:scale-105 focus:ring-neutral-200',
-        outline: 'border-2 border-neutral-300 text-neutral-700 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50 focus:ring-primary-100',
-        ghost: 'bg-transparent text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:ring-neutral-100',
-        warning: 'bg-warning-500 text-white shadow-soft hover:bg-warning-600 hover:scale-105 focus:ring-warning-200'
+        primary: 'bg-primary-400 dark:bg-emerald-500 text-neutral-800 dark:text-white shadow-inner-glow hover:bg-primary-300 dark:hover:bg-emerald-600 hover:scale-105 focus:ring-primary-200 dark:focus:ring-emerald-400',
+        accent: 'bg-accent-400 dark:bg-purple-600 text-white dark:text-white shadow-inner-glow-orange dark:shadow-inner-glow hover:bg-accent-500 dark:hover:bg-purple-700 hover:scale-105 focus:ring-accent-200 dark:focus:ring-purple-300 animate-pop',
+        glass: 'glass-panel text-neutral-700 dark:text-neutral-200 font-semibold hover:bg-white/80 dark:hover:bg-neutral-800/80 hover:scale-105 focus:ring-primary-200 dark:focus:ring-purple-400',
+        danger: 'bg-danger-500 dark:bg-danger-600 text-white shadow-soft hover:bg-danger-600 dark:hover:bg-danger-700 hover:scale-105 focus:ring-danger-200 dark:focus:ring-danger-400',
+        success: 'bg-success-500 dark:bg-success-600 text-white shadow-soft hover:bg-success-600 dark:hover:bg-success-700 hover:scale-105 focus:ring-success-200 dark:focus:ring-success-400',
+        secondary: 'bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 hover:scale-105 focus:ring-neutral-200 dark:focus:ring-neutral-600',
+        outline: 'border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 hover:border-primary-400 dark:hover:border-purple-500 hover:text-primary-600 dark:hover:text-purple-400 hover:bg-primary-50 dark:hover:bg-purple-950/30 focus:ring-primary-100 dark:focus:ring-purple-900',
+        ghost: 'bg-transparent text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-white focus:ring-neutral-100 dark:focus:ring-neutral-700',
+        warning: 'bg-warning-500 dark:bg-warning-600 text-white shadow-soft hover:bg-warning-600 dark:hover:bg-warning-700 hover:scale-105 focus:ring-warning-200 dark:focus:ring-warning-400'
     };
 
     const sizes = {

@@ -1,69 +1,122 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongo';
-import SeatReservation from '@/lib/models/SeatReservation';
 import Trip from '@/lib/models/Trip';
-import { ReservationStatus } from '@/lib/types';
+import { SeatLockService } from '@/lib/services/SeatLockService';
+import { ReserveSeatsSchema } from '@/lib/services/validationSchemas';
+import { validateBody, errorResponse, successResponse } from '@/lib/services/validationMiddleware';
+import { AppError } from '@/lib/services/errors';
+import { AuditService } from '@/lib/services/AuditService';
 
-// POST /api/bookings/reserve - Temporary seat hold
-export async function POST(req: Request) {
+/**
+ * POST /api/bookings/reserve
+ * Reserve seats on a trip (creates a temporary hold)
+ */
+export async function POST(request: NextRequest) {
     try {
-        const { tripId, seatNumbers, userId, sessionId } = await req.json();
-
-        if (!tripId || !seatNumbers || !seatNumbers.length || !sessionId) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-        }
-
         await dbConnect();
 
-        // 1. Check if seats are currently available in the Trip model
+        // Get user from auth
+        const userId = request.headers.get('x-user-id');
+        if (!userId) {
+            return errorResponse(new AppError('User not authenticated', 401), 401);
+        }
+
+        // Validate request body
+        const validation = await validateBody(request, ReserveSeatsSchema);
+        if (!validation.valid) {
+            return errorResponse(validation.error, 400);
+        }
+
+        const { tripId, seatNumbers, holdDurationMinutes } = validation.data;
+
+        // Check if trip exists
         const trip = await Trip.findById(tripId);
         if (!trip) {
-            return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
+            return errorResponse(new AppError('Trip not found', 404), 404);
         }
 
-        const unavail = seatNumbers.filter((s: string) => !trip.availableSeats.includes(s));
-        if (unavail.length > 0) {
-            return NextResponse.json({
-                error: 'One or more seats are no longer available',
-                unavailableSeats: unavail
-            }, { status: 409 });
-        }
-
-        // 2. Check if there are any active PENDING reservations for these seats
-        const existingReservations = await SeatReservation.find({
+        // Acquire seat lock
+        const lockResult = await SeatLockService.acquireLock(
             tripId,
-            seatNumbers: { $in: seatNumbers },
-            status: ReservationStatus.PENDING,
-            expiresAt: { $gt: new Date() }
-        });
-
-        if (existingReservations.length > 0) {
-            return NextResponse.json({
-                error: 'One or more seats are temporarily held by another user'
-            }, { status: 409 });
-        }
-
-        // 3. Create reservation (expires in 10 minutes)
-        const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-
-        const reservation = await SeatReservation.create({
-            tripId,
-            seatNumbers,
             userId,
-            sessionId,
-            status: ReservationStatus.PENDING,
-            expiresAt
+            seatNumbers,
+            holdDurationMinutes
+        );
+
+        // Audit log
+        await AuditService.log({
+            userId,
+            action: 'SEAT_RESERVED',
+            resource: 'SeatLock',
+            resourceId: lockResult.lockId.toString(),
+            details: {
+                tripId,
+                seatNumbers,
+                expiresAt: lockResult.expiresAt
+            }
         });
 
-        return NextResponse.json({
-            message: 'Seats reserved temporarily',
-            reservationId: reservation._id,
-            expiresAt: reservation.expiresAt
-        }, { status: 201 });
-
+        return successResponse(
+            {
+                lockId: lockResult.lockId,
+                tripId,
+                seatNumbers,
+                status: 'HELD',
+                expiresAt: lockResult.expiresAt,
+                holdDurationMinutes,
+                message: `Seats held for ${holdDurationMinutes} minutes`
+            },
+            201
+        );
     } catch (error: any) {
-        console.error('Error reserving seats:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        console.error('Seat reservation error:', error);
+        if (error instanceof AppError) {
+            return errorResponse(error, error.statusCode);
+        }
+        return errorResponse(new AppError('Seat reservation failed', 500), 500);
+    }
+}
+
+/**
+ * GET /api/bookings/reserve?tripId=xxx
+ * Check available seats on a trip
+ */
+export async function GET(request: NextRequest) {
+    try {
+        await dbConnect();
+
+        const { searchParams } = new URL(request.url);
+        const tripId = searchParams.get('tripId');
+
+        if (!tripId) {
+            return errorResponse(new AppError('Trip ID required', 400), 400);
+        }
+
+        // Get trip
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return errorResponse(new AppError('Trip not found', 404), 404);
+        }
+
+        // Get locked seats
+        const lockedSeats = await SeatLockService.getLockedSeats(tripId);
+
+        // Calculate available seats
+        const availableSeats = trip.availableSeats.filter((seat: number) => !lockedSeats.includes(seat));
+
+        return successResponse({
+            tripId,
+            totalSeats: trip.availableSeats.length,
+            availableSeatsCount: availableSeats.length,
+            lockedSeatsCount: lockedSeats.length,
+            availableSeats,
+            lockedSeats
+        });
+    } catch (error: any) {
+        console.error('Get available seats error:', error);
+        if (error instanceof AppError) {
+            return errorResponse(error, error.statusCode);
+        }
+        return errorResponse(new AppError('Failed to get available seats', 500), 500);
     }
 }

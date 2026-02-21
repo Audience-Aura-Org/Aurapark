@@ -1,0 +1,862 @@
+/* ========================================================
+   DARK MODE COMPREHENSIVE STYLING
+   Complete dark mode overrides for maximum visibility
+   ======================================================== */
+
+:root.dark {
+  /* ========== COLOR SYSTEM ========== */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e2e8f0;
+  --color-text-tertiary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  
+  --color-border-primary: #475569;
+  --color-border-secondary: #334155;
+  
+  --color-accent-primary: #3b82f6;
+  --color-accent-secondary: #60a5fa;
+  --color-accent-gold: #fbbf24;
+  --color-accent-emerald: #10b981;
+  
+  --color-status-success: #10b981;
+  --color-status-danger: #ef4444;
+  --color-status-warning: #f59e0b;
+  --color-status-info: #3b82f6;
+}
+
+/* ========== WHITE BACKGROUND FIXES (rgb(250 250 250) & LIGHT COLORS) ========== */
+
+/* Fix text color on light backgrounds in dark mode */
+:root.dark .bg-white,
+:root.dark [class*="bg-white"],
+:root.dark [class*="bg-neutral-50"],
+:root.dark [class*="bg-slate-50"] {
+  color: #ffffff !important;
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Fix text-neutral-700 and text-neutral-800 in dark mode */
+:root.dark .text-neutral-700,
+:root.dark .text-neutral-800,
+:root.dark .text-slate-700,
+:root.dark .text-slate-800,
+:root.dark .text-gray-700,
+:root.dark .text-gray-800 {
+  color: #ffffff !important;
+}
+
+/* Fix textboxes with light bg and dark text */
+:root.dark input[class*="text-neutral"],
+:root.dark textarea[class*="text-neutral"],
+:root.dark input[class*="text-slate"],
+:root.dark textarea[class*="text-slate"],
+:root.dark input[class*="text-gray"],
+:root.dark textarea[class*="text-gray"] {
+  color: #ffffff !important;
+  background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+/* Fix placeholder colors */
+:root.dark [class*="text-neutral-400"],
+:root.dark [class*="text-slate-400"],
+:root.dark [class*="text-gray-400"] {
+  color: #cbd5e1 !important;
+}
+
+/* ========== BASE ELEMENTS ========== */
+
+:root.dark body {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+:root.dark h1,
+:root.dark h2,
+:root.dark h3,
+:root.dark h4,
+:root.dark h5,
+:root.dark h6 {
+  color: #ffffff;
+}
+
+:root.dark p,
+:root.dark span,
+:root.dark div {
+  color: #e2e8f0;
+}
+
+:root.dark a {
+  color: #d8b4fe;
+}
+
+:root.dark a:hover {
+  color: #e9d5ff;
+}
+
+/* ========== NAVBAR ========== */
+
+:root.dark nav,
+:root.dark [class*="navbar"],
+:root.dark [class*="Navbar"],
+:root.dark header {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border-color: rgba(71, 85, 105, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+:root.dark nav a,
+:root.dark [class*="navbar"] a,
+:root.dark header a {
+  color: #e2e8f0;
+}
+
+:root.dark nav a:hover,
+:root.dark [class*="navbar"] a:hover,
+:root.dark header a:hover {
+  color: #d8b4fe;
+}
+
+:root.dark nav button,
+:root.dark [class*="navbar"] button,
+:root.dark header button {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #d8b4fe;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+:root.dark nav button:hover,
+:root.dark [class*="navbar"] button:hover,
+:root.dark header button:hover {
+  background-color: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* ========== SIDEBAR ========== */
+
+:root.dark aside,
+:root.dark [class*="sidebar"],
+:root.dark [class*="Sidebar"] {
+  background-color: rgba(15, 23, 42, 0.9);
+  border-color: rgba(71, 85, 105, 0.3);
+}
+
+:root.dark aside a,
+:root.dark [class*="sidebar"] a {
+  color: #cbd5e1;
+}
+
+:root.dark aside a:hover,
+:root.dark [class*="sidebar"] a:hover {
+  color: #d8b4fe;
+  background-color: rgba(139, 92, 246, 0.15);
+}
+
+/* ========== GLASS COMPONENTS ========== */
+
+:root.dark .glass-panel,
+:root.dark [class*="glass-panel"] {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-color: rgba(71, 85, 105, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+:root.dark .glass-panel-strong,
+:root.dark [class*="glass-panel-strong"] {
+  background-color: rgba(30, 41, 59, 0.7);
+  border-color: rgba(71, 85, 105, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+:root.dark .glass-card,
+:root.dark [class*="glass-card"] {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(71, 85, 105, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+:root.dark .liquid-glass-premium,
+:root.dark [class*="liquid-glass"] {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(30, 41, 59, 0.2) 50%, rgba(51, 65, 85, 0.3) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ========== INPUT FIELDS ========== */
+
+:root.dark input,
+:root.dark textarea,
+:root.dark select {
+  background-color: rgba(30, 41, 59, 0.6);
+  color: #f0f4f8;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+:root.dark input::placeholder,
+:root.dark textarea::placeholder {
+  color: #cbd5e1;
+}
+
+:root.dark label,
+:root.dark [class*="label"] {
+  color: #e8ecf1 !important;
+  font-weight: 500;
+}
+
+:root.dark input:focus,
+:root.dark textarea:focus,
+:root.dark select:focus {
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #ffffff;
+  border-color: #c4b5fd;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+  outline: none;
+}
+
+:root.dark input.input-error,
+:root.dark input[aria-invalid="true"] {
+  border-color: #ef4444;
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+:root.dark input.input-error:focus,
+:root.dark input[aria-invalid="true"]:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+:root.dark input.input-success {
+  border-color: #10b981;
+}
+
+:root.dark input.input-success:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* ========== BUTTONS ========== */
+
+:root.dark button,
+:root.dark [role="button"] {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+:root.dark button:hover,
+:root.dark [role="button"]:hover {
+  background-color: #7c3aed;
+}
+
+:root.dark button:active,
+:root.dark [role="button"]:active {
+  background-color: #6d28d9;
+}
+
+:root.dark button:disabled,
+:root.dark [role="button"]:disabled {
+  background-color: #475569;
+  color: #94a3b8;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:root.dark .btn-primary {
+  background-color: #8b5cf6 !important;
+  color: #ffffff !important;
+}
+
+:root.dark .btn-primary:hover {
+  background-color: #7c3aed !important;
+}
+
+:root.dark .btn-accent {
+  background-color: #fbbf24 !important;
+  color: #000000 !important;
+}
+
+:root.dark .btn-accent:hover {
+  background-color: #f59e0b !important;
+}
+
+:root.dark .btn-glass {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  color: #d8b4fe !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
+
+:root.dark .btn-glass:hover {
+  background-color: rgba(139, 92, 246, 0.3) !important;
+  border-color: rgba(139, 92, 246, 0.7) !important;
+}
+
+/* ========== BADGES & TAGS ========== */
+
+:root.dark [class*="badge"],
+:root.dark [class*="tag"],
+:root.dark [class*="pill"] {
+  background-color: rgba(139, 92, 246, 0.3);
+  color: #e9d5ff;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+:root.dark [class*="badge"].success,
+:root.dark [class*="tag"].success,
+:root.dark [class*="pill"].success {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+:root.dark [class*="badge"].danger,
+:root.dark [class*="tag"].danger,
+:root.dark [class*="pill"].danger {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+:root.dark [class*="badge"].warning,
+:root.dark [class*="tag"].warning,
+:root.dark [class*="pill"].warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* ========== TABLES ========== */
+
+:root.dark table {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-color: rgba(71, 85, 105, 0.3);
+}
+
+:root.dark th {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #ffffff;
+  border-color: rgba(71, 85, 105, 0.4);
+  font-weight: 600;
+}
+
+:root.dark td {
+  color: #e8ecf1;
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+:root.dark tr:hover {
+  background-color: rgba(139, 92, 246, 0.08);
+}
+
+/* ========== MODALS & OVERLAYS ========== */
+
+:root.dark [class*="modal"],
+:root.dark [class*="Modal"] {
+  background-color: #1e293b;
+  color: #f0f4f8;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+:root.dark [class*="modal"] label,
+:root.dark [class*="Modal"] label {
+  color: #e8ecf1 !important;
+}
+
+:root.dark [class*="modal"] button,
+:root.dark [class*="Modal"] button {
+  background-color: #8b5cf6 !important;
+  color: #ffffff !important;
+}
+
+:root.dark [class*="backdrop"],
+:root.dark [class*="overlay"] {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* ========== ALERTS ========== */
+
+:root.dark [class*="alert"],
+:root.dark [class*="Alert"] {
+  border-color: rgba(139, 92, 246, 0.3);
+  background-color: rgba(139, 92, 246, 0.08);
+  color: #e8ecf1;
+}
+
+:root.dark [class*="alert"].success,
+:root.dark [class*="Alert"].success {
+  background-color: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #a7f3d0;
+}
+
+:root.dark [class*="alert"].danger,
+:root.dark [class*="alert"].error,
+:root.dark [class*="Alert"].danger,
+:root.dark [class*="Alert"].error {
+  background-color: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fecaca;
+}
+
+:root.dark [class*="alert"].warning,
+:root.dark [class*="Alert"].warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fcd34d;
+}
+
+:root.dark [class*="alert"].info,
+:root.dark [class*="Alert"].info {
+  background-color: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #d8b4fe;
+}
+
+/* ========== FORMS ========== */
+
+:root.dark form {
+  color: #e8ecf1;
+}
+
+:root.dark label,
+:root.dark [class*="label"] {
+  color: #e8ecf1 !important;
+  font-weight: 500;
+}
+
+:root.dark [for] {
+  color: #e8ecf1 !important;
+  font-weight: 500;
+}
+
+/* ========== STATUS & CONFIRM BUTTONS ========== */
+
+:root.dark [class*="status"],
+:root.dark [class*="Status"],
+:root.dark [class*="confirm"],
+:root.dark [class*="Confirm"] {
+  color: #f0f4f8 !important;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%) !important;
+  border-color: #8b5cf6 !important;
+}
+
+:root.dark button[class*="confirm"],
+:root.dark button[class*="Confirm"],
+:root.dark [class*="status"] button {
+  background-color: #8b5cf6 !important;
+  color: #ffffff !important;
+  border-color: #7c3aed !important;
+}
+
+:root.dark button[class*="confirm"]:hover,
+:root.dark [class*="status"] button:hover {
+  background-color: #7c3aed !important;
+}
+
+/* ========== CARDS ========== */
+
+:root.dark [class*="card"],
+:root.dark [class*="Card"] {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #e8ecf1;
+}
+
+:root.dark [class*="card"] h1,
+:root.dark [class*="card"] h2,
+:root.dark [class*="card"] h3,
+:root.dark [class*="card"] h4,
+:root.dark [class*="card"] h5,
+:root.dark [class*="card"] h6,
+:root.dark [class*="Card"] h1,
+:root.dark [class*="Card"] h2,
+:root.dark [class*="Card"] h3,
+:root.dark [class*="Card"] h4,
+:root.dark [class*="Card"] h5,
+:root.dark [class*="Card"] h6 {
+  color: #f0f4f8;
+}
+
+/* ========== DROPDOWNS & MENUS ========== */
+
+:root.dark [class*="dropdown"],
+:root.dark [class*="menu"],
+:root.dark [class*="select"] {
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #e8ecf1;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+:root.dark [class*="dropdown"] a,
+:root.dark [class*="dropdown"] button,
+:root.dark [class*="menu"] a,
+:root.dark [class*="menu"] button {
+  color: #e8ecf1;
+}
+
+:root.dark [class*="dropdown"] a:hover,
+:root.dark [class*="dropdown"] button:hover,
+:root.dark [class*="menu"] a:hover,
+:root.dark [class*="menu"] button:hover {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #d8b4fe;
+}
+
+/* ========== LOADERS & SPINNERS ========== */
+
+:root.dark [class*="loader"],
+:root.dark [class*="spinner"] {
+  border-color: rgba(71, 85, 105, 0.3);
+  border-top-color: #8b5cf6;
+}
+
+/* ========== CODE BLOCKS ========== */
+
+:root.dark code,
+:root.dark pre {
+  background-color: rgba(15, 23, 42, 0.8);
+  color: #e8ecf1;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* ========== LINKS ========== */
+
+:root.dark a,
+:root.dark [role="link"] {
+  color: #d8b4fe;
+  text-decoration: none;
+}
+
+:root.dark a:hover,
+:root.dark [role="link"]:hover {
+  color: #e9d5ff;
+  text-decoration: underline;
+}
+
+:root.dark a:visited,
+:root.dark [role="link"]:visited {
+  color: #d8b4fe;
+}
+
+/* ========== PAGINATION ========== */
+
+:root.dark [class*="pagination"] button,
+:root.dark [class*="pagination"] a {
+  background-color: transparent;
+  color: #d1d5db;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+:root.dark [class*="pagination"] button:hover,
+:root.dark [class*="pagination"] a:hover {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #d8b4fe;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+:root.dark [class*="pagination"] [class*="active"],
+:root.dark [class*="pagination"] button.active,
+:root.dark [class*="pagination"] a.active {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border-color: #8b5cf6;
+}
+
+/* ========== TABS ========== */
+
+:root.dark [class*="tab"],
+:root.dark [class*="Tab"] {
+  color: #d1d5db;
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+:root.dark [class*="tab"]:hover,
+:root.dark [class*="Tab"]:hover {
+  color: #d8b4fe;
+}
+
+:root.dark [class*="tab"].active,
+:root.dark [class*="Tab"].active {
+  color: #d8b4fe;
+  border-color: #d8b4fe;
+}
+
+/* ========== PROGRESS BARS ========== */
+
+:root.dark [class*="progress"],
+:root.dark [class*="Progress"] {
+  background-color: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+:root.dark [class*="progress"] [class*="bar"],
+:root.dark [class*="Progress"] [class*="bar"] {
+  background-color: #8b5cf6;
+}
+
+/* ========== SKELETON LOADERS ========== */
+
+:root.dark [class*="skeleton"] {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+  background-size: 200% 100%;
+  animation: loading 2s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ========== DIVIDERS ========== */
+
+:root.dark hr,
+:root.dark [class*="divider"] {
+  background-color: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+/* ========== FOCUS STATES ========== */
+
+:root.dark :focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+/* ========== TEXT UTILITIES ========== */
+
+:root.dark .text-muted,
+:root.dark [class*="text-muted"] {
+  color: #cbd5e1;
+}
+
+:root.dark .text-secondary,
+:root.dark [class*="text-secondary"] {
+  color: #e2e8f0;
+}
+
+:root.dark .text-light,
+:root.dark [class*="text-light"] {
+  color: #e8ecf1;
+}
+
+/* ========== BACKGROUNDS ========== */
+
+:root.dark .bg-primary,
+:root.dark [class*="bg-primary"] {
+  background-color: #8b5cf6;
+}
+
+:root.dark .bg-secondary,
+:root.dark [class*="bg-secondary"] {
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+:root.dark .bg-light,
+:root.dark [class*="bg-light"] {
+  background-color: rgba(51, 65, 85, 0.4);
+}
+
+/* ========== SHADOWS ========== */
+
+:root.dark [class*="shadow"] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark [class*="shadow-lg"] {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark [class*="shadow-xl"] {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+}
+/* ========== TAILWIND COLOR OVERRIDES FOR DARK MODE ========== */
+
+/* SUCCESS COLORS - REPLACE WITH PURPLE */
+:root.dark .bg-success-50,
+:root.dark .bg-success-100 {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+:root.dark .bg-success-500,
+:root.dark .bg-success-600 {
+  background-color: #8b5cf6 !important;
+}
+
+:root.dark .text-success-50,
+:root.dark .text-success-100,
+:root.dark .text-success-600,
+:root.dark .text-success-700,
+:root.dark .text-success-900 {
+  color: #d8b4fe !important;
+}
+
+:root.dark .border-success-100,
+:root.dark .border-success-300 {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+:root.dark .ring-success-50 {
+  --tw-ring-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* WARNING COLORS - REPLACE WITH AMBER */
+:root.dark .bg-warning-50,
+:root.dark .bg-warning-100 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+:root.dark .bg-warning-500 {
+  background-color: #f59e0b !important;
+}
+
+:root.dark .text-warning-600,
+:root.dark .text-warning-700,
+:root.dark .text-warning-900 {
+  color: #fcd34d !important;
+}
+
+:root.dark .border-warning-300 {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+/* DANGER/ERROR COLORS - KEEP RED BUT BRIGHTEN */
+:root.dark .bg-danger-50,
+:root.dark .bg-danger-100 {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+:root.dark .bg-danger-500 {
+  background-color: #ef4444 !important;
+}
+
+:root.dark .text-danger-600,
+:root.dark .text-danger-700,
+:root.dark .text-danger-900 {
+  color: #fecaca !important;
+}
+
+:root.dark .border-danger-300 {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* PRIMARY/INFO COLORS - USE PURPLE */
+:root.dark .bg-primary-50,
+:root.dark .bg-primary-100 {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+:root.dark .bg-primary-900 {
+  background-color: #6d28d9 !important;
+}
+
+:root.dark .text-primary-600,
+:root.dark .text-primary-700,
+:root.dark .text-primary-900 {
+  color: #d8b4fe !important;
+}
+
+:root.dark .border-primary-300 {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+/* NEUTRAL COLORS - LIGHTEN FOR VISIBILITY */
+:root.dark .bg-neutral-100 {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+:root.dark .text-neutral-900,
+:root.dark .text-neutral-700 {
+  color: #e8ecf1 !important;
+}
+
+:root.dark .border-neutral-300 {
+  border-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+/* ACCENT COLORS */
+:root.dark .bg-accent-400 {
+  background-color: #8b5cf6 !important;
+}
+
+:root.dark .border-accent-500 {
+  border-color: #7c3aed !important;
+}
+
+/* ========== COMPREHENSIVE LIGHT BACKGROUND & TEXT FIXES ========== */
+
+/* All light/white background colors - convert to dark mode safe */
+:root.dark [style*="background-color: rgb(250, 250, 250)"],
+:root.dark [style*="background-color: rgb(255, 255, 255)"],
+:root.dark [style*="background-color: #fff"],
+:root.dark [style*="background-color: #ffffff"],
+:root.dark [style*="background: rgb(250, 250, 250)"],
+:root.dark [style*="background: rgb(255, 255, 255)"],
+:root.dark [style*="background: #fff"],
+:root.dark [style*="background: #ffffff"] {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+  color: #ffffff !important;
+}
+
+/* Fix all neutral light grays to white */
+:root.dark .text-neutral-100,
+:root.dark .text-neutral-200,
+:root.dark .text-neutral-300,
+:root.dark .text-stone-100,
+:root.dark .text-stone-200,
+:root.dark .text-stone-300,
+:root.dark .text-zinc-100,
+:root.dark .text-zinc-200,
+:root.dark .text-zinc-300 {
+  color: #ffffff !important;
+}
+
+/* Light background utilities */
+:root.dark .bg-neutral-100,
+:root.dark .bg-neutral-200,
+:root.dark .bg-neutral-300,
+:root.dark .bg-stone-100,
+:root.dark .bg-stone-200,
+:root.dark .bg-stone-300,
+:root.dark .bg-zinc-100,
+:root.dark .bg-zinc-200,
+:root.dark .bg-zinc-300,
+:root.dark .bg-slate-100,
+:root.dark .bg-slate-200,
+:root.dark .bg-slate-300,
+:root.dark .bg-gray-100,
+:root.dark .bg-gray-200,
+:root.dark .bg-gray-300 {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* White opacity backgrounds - catch via attribute selector */
+:root.dark [class*="bg-white"] {
+  background-color: rgba(30, 41, 59, 0.7) !important;
+  color: #ffffff !important;
+}
+
+/* Ensure white text on light backgrounds in dark mode */
+:root.dark [class*="text-neutral"] p,
+:root.dark [class*="text-stone"] p,
+:root.dark [class*="text-slate"] p {
+  color: #ffffff !important;
+}
+
+/* Fix light hover states */
+:root.dark [class*="hover:bg-white"]:hover,
+:root.dark [class*="hover:bg-neutral"]:hover,
+:root.dark [class*="focus:bg-white"]:focus {
+  background-color: rgba(30, 41, 59, 0.85) !important;
+  color: #ffffff !important;
+}

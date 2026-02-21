@@ -13,35 +13,35 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-mesh-green">
+    <div className="min-h-screen bg-mesh-green dark:bg-neutral-950">
       <Sidebar />
-      <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-20 safe-bottom-nav ${user ? (isCollapsed ? 'lg:pl-20' : 'lg:pl-72') : ''}`}>
+      <main className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] min-h-screen pt-16 sm:pt-20 safe-bottom-nav ${user ? (isCollapsed ? 'lg:pl-20' : 'lg:pl-72') : ''}`}>
 
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-24 md:py-32">
+        <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 lg:py-32">
           {/* Floating Orbs */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-20 left-10 w-96 h-96 bg-primary-300/40 rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-accent-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+            <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-48 sm:w-96 h-48 sm:h-96 bg-primary-300/40 dark:bg-purple-500/20 rounded-full blur-3xl animate-float"></div>
+            <div className="absolute bottom-10 sm:bottom-20 right-5 sm:right-10 w-64 sm:w-[500px] h-64 sm:h-[500px] bg-accent-300/20 dark:bg-amber-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 sm:w-80 h-40 sm:h-80 bg-primary-200/30 dark:bg-emerald-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
           </div>
 
-          <div className="container-custom relative z-10">
+          <div className="px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-6xl mx-auto">
               {/* Centered Content */}
-              <div className="text-center space-y-8 mb-16 animate-fade-up">
-                <div className="inline-flex items-center gap-2 glass-panel px-5 py-2.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-primary-400 animate-pulse-soft shadow-inner-glow"></div>
-                  <span className="text-xs font-semibold text-neutral-700">Modern Travel Platform</span>
+              <div className="text-center space-y-4 sm:space-y-6 md:space-y-8 mb-8 sm:mb-12 md:mb-16 animate-fade-up">
+                <div className="inline-flex items-center gap-2 glass-panel px-4 sm:px-5 py-2 sm:py-2.5">
+                  <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-primary-400 dark:bg-emerald-400 animate-pulse-soft shadow-inner-glow"></div>
+                  <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">Premium Travel Platform</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-neutral-900 leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-neutral-900 dark:text-white leading-tight">
                   Travel Anywhere
                   <br />
-                  <span className="text-gradient-green">Easily</span>
+                  <span className="text-gradient-green dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-emerald-400 dark:to-teal-400">Easily</span>
                 </h1>
 
-                <p className="text-xl md:text-2xl text-neutral-700 font-medium leading-relaxed max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-neutral-700 dark:text-neutral-400 font-medium leading-relaxed max-w-3xl mx-auto">
                   Book bus tickets and track your trips in real-time. Comfortable travel across 450+ routes.
                 </p>
 
@@ -72,16 +72,16 @@ export default function Home() {
         {/* Featured Destinations */}
         <section className="py-24">
           <div className="container-custom">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 animate-fade-up">
-              <div className="space-y-3">
-                <h2 className="text-5xl md:text-6xl font-black text-neutral-900">
+            <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 mb-12 animate-fade-up text-center md:text-left">
+              <div className="space-y-3 max-w-2xl mx-auto md:mx-0">
+                <h2 className="text-5xl md:text-6xl font-black text-neutral-900 dark:text-white">
                   Popular <span className="text-gradient-green">Destinations</span>
                 </h2>
-                <p className="text-lg font-medium text-neutral-700 max-w-xl">
+                <p className="text-lg font-medium text-neutral-700 dark:text-neutral-400 max-w-xl">
                   Discover our most-loved routes with premium amenities and guaranteed comfort.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                 <Link href="/trips">
                   <Button variant="primary" size="lg">
                     Browse All Trips
