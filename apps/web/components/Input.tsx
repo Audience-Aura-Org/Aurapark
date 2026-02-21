@@ -63,7 +63,7 @@ export function Input({
                             absolute ${leftIcon ? 'left-11' : 'left-4'} transition-all duration-200 pointer-events-none z-10
                             ${shouldFloatLabel
                                 ? 'top-[-10px] text-xs font-black text-primary-700 bg-white dark:bg-neutral-900 px-1.5 rounded-lg border border-primary-100 dark:border-purple-500/30'
-                                : 'top-1/2 -translate-y-1/2 text-base text-neutral-500 dark:text-neutral-400 font-bold'
+                                : '-top-7 text-xs font-semibold text-neutral-600 dark:text-neutral-400'
                             }
                         `}
                     >
@@ -86,8 +86,8 @@ export function Input({
                         w-full px-4 rounded-xl border-2 outline-none transition-all duration-200
                         bg-white dark:bg-neutral-900 shadow-soft focus:shadow-soft-lg
                         text-neutral-900 dark:text-white font-bold
-                        ${(label && !shouldFloatLabel) ? 'placeholder-transparent' : 'placeholder-neutral-400 dark:placeholder-neutral-500'}
-                        ${shouldFloatLabel ? 'pt-6 pb-2' : 'py-3'}
+                        placeholder-neutral-400 dark:placeholder-neutral-500
+                        ${shouldFloatLabel ? 'pt-6 pb-2' : `py-3 ${label ? 'mt-2' : ''}`}
                         ${error
                             ? 'border-red-400 focus:border-red-600 focus:ring-4 focus:ring-red-100 dark:border-red-500/70 dark:focus:ring-red-500/30'
                             : success

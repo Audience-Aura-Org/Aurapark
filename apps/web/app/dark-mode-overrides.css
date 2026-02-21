@@ -203,6 +203,7 @@
 :root.dark input::placeholder,
 :root.dark textarea::placeholder {
   color: #64748b !important;
+  opacity: 1 !important;
 }
 
 :root.dark input {
@@ -215,11 +216,17 @@
   color: #ffffff !important;
 }
 
+/* Input labels - above the field */
+:root.dark label {
+  color: #cbd5e1 !important;
+}
+
 /* Floating label styling in dark mode */
-:root.dark label[class*="top-[-10px]"] {
-  background-color: rgba(23, 23, 23, 0.9) !important;
+:root.dark label[class*="top-[-10px]"],
+:root.dark label[class*="font-black"] {
+  background-color: rgba(23, 23, 23, 0.95) !important;
   color: #d8b4fe !important;
-  border-color: rgba(139, 92, 246, 0.5) !important;
+  border-color: rgba(139, 92, 246, 0.6) !important;
 }
 
 :root.dark label,
