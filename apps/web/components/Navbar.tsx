@@ -70,12 +70,13 @@ export default function Navbar() {
 
     return (
         <nav className={`
-            fixed top-0 inset-x-0 z-[80] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
+            fixed top-0 left-0 right-0 z-[80] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
             ${scrolled ? 'h-14 dark:bg-neutral-950/90 bg-white/90 backdrop-blur-md shadow-sm border-b dark:border-neutral-800 border-neutral-100' : 'h-16 dark:bg-neutral-950/50 bg-white/50 backdrop-blur-sm'}
             ${user ? (isCollapsed ? 'lg:pl-20' : 'lg:pl-72') : ''}
         `}>
-            <div className="max-w-7xl mx-auto h-full px-4 md:px-8 flex items-center justify-between gap-4">
-                {/* Logo & Platform ID */}
+            <div className="h-full flex items-center justify-center px-4 md:px-6 lg:px-8">
+                <div className="w-full max-w-[2000px] h-full flex items-center justify-between gap-4">
+                    {/* Logo & Platform ID */}
                 <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
                     <div className="h-9 w-auto flex items-center justify-center text-lg font-black text-gradient-green dark:text-emerald-400">
                         AP
@@ -168,6 +169,7 @@ export default function Navbar() {
                         </svg>
                     </button>
                 </div>
+            </div>
             </div>
 
             {/* Mobile Menu Overflow (Only for non-logged in users) */}
