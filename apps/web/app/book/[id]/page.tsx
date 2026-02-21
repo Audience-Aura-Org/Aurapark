@@ -211,6 +211,10 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                 seatNumbers: selectedSeats,
                 sessionId,
                 userId: user?._id
+            }, {
+                headers: {
+                    'x-user-id': user?._id || ''
+                }
             });
             setReservation({ _id: data.reservationId, expiresAt: data.expiresAt });
             setStep('PASSENGER_INFO');

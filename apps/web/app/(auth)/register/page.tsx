@@ -125,8 +125,8 @@ export default function RegisterPage() {
                         </select>
                     </div>
 
-                    <div className="flex items-start gap-2 pt-2">
-                        <input type="checkbox" required className="w-4 h-4 mt-1 rounded border-neutral-300 text-primary-400 focus:ring-primary-200" />
+                    <div className="flex gap-3 pt-2">
+                        <input type="checkbox" required className="w-4 h-4 flex-shrink-0 mt-0.5 rounded border-neutral-300 text-primary-400 focus:ring-primary-200" />
                         <label className="text-sm font-medium text-neutral-700">
                             I agree to the{' '}
                             <Link href="/terms" className="font-bold text-primary-600 hover:text-primary-700">
