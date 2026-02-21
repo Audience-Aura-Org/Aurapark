@@ -33,13 +33,13 @@ export function ThemeToggle() {
             onClick={toggleTheme}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="relative inline-flex items-center justify-center p-3 rounded-2xl glass-panel transition-all duration-300 hover:shadow-glass-lg hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-200 dark:focus:ring-purple-400"
+            className="relative inline-flex items-center justify-center w-10 h-10 md:w-11 md:h-11 p-2 md:p-2.5 rounded-2xl glass-panel transition-all duration-300 hover:shadow-glass-lg hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-200 dark:focus:ring-purple-400"
             aria-label="Toggle theme"
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
             {/* Sun Icon */}
             <svg
-                className={`absolute w-5 h-5 transition-all duration-500 ${
+                className={`w-5 h-5 md:w-5 md:h-5 transition-all duration-500 ${
                     isDark ? 'rotate-90 opacity-0 scale-0' : 'rotate-0 opacity-100 scale-100'
                 } text-accent-400`}
                 fill="currentColor"
@@ -50,7 +50,7 @@ export function ThemeToggle() {
 
             {/* Moon Icon */}
             <svg
-                className={`absolute w-5 h-5 transition-all duration-500 ${
+                className={`absolute w-5 h-5 md:w-5 md:h-5 transition-all duration-500 ${
                     isDark ? 'rotate-0 opacity-100 scale-100' : '-rotate-90 opacity-0 scale-0'
                 } text-purple-400`}
                 fill="currentColor"

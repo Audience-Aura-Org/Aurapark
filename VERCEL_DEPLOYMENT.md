@@ -85,7 +85,7 @@ If database shows as "failed":
 - `https://www.aurapark-web.vercel.app`
 - `http://localhost:3000` (development)
 
-If you need to add another origin, update `apps/web/middleware.ts`:
+If you need to add another origin, update `apps/web/proxy.ts`:
 ```typescript
 const ALLOWED_ORIGINS = [
   // ... existing origins
@@ -108,7 +108,7 @@ const ALLOWED_ORIGINS = [
 |-------|----------|
 | 500 Error on login | Check MONGODB_URI environment variable |
 | "Database connection failed" | Whitelist Vercel IPs in MongoDB Atlas |
-| CORS errors | Check middleware.ts ALLOWED_ORIGINS |
+| CORS errors | Check proxy.ts ALLOWED_ORIGINS |
 | Cookies not working | Ensure secure cookies in production |
 | Login but redirect fails | Check JWT_SECRET matches between requests |
 
