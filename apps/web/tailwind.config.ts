@@ -122,21 +122,21 @@ const config: Config = {
                 '8xl': ['84px', { lineHeight: '1', fontWeight: '900' }]
             },
             borderRadius: {
-                'xl': '16px',
-                '2xl': '24px',
-                '3xl': '32px',
-                '4xl': '40px'
+                'xl': '14px',
+                '2xl': '21px',
+                '3xl': '28px',
+                '4xl': '35px'
             },
             spacing: {
-                'xs': '4px',
-                'sm': '8px',
-                'md': '16px',
-                'lg': '24px',
-                'xl': '32px',
-                '2xl': '40px',
-                '3xl': '48px',
-                '4xl': '56px',
-                '5xl': '64px'
+                'xs': '3px',
+                'sm': '6px',
+                'md': '14px',
+                'lg': '21px',
+                'xl': '28px',
+                '2xl': '35px',
+                '3xl': '42px',
+                '4xl': '49px',
+                '5xl': '56px'
             },
             boxShadow: {
                 'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
