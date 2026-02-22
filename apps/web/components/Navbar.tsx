@@ -78,9 +78,11 @@ export default function Navbar() {
                 <div className="w-full max-w-[2000px] h-full flex items-center justify-between gap-4">
                     {/* Logo & Platform ID */}
                 <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-                    <div className="h-9 w-auto flex items-center justify-center text-lg font-black text-gradient-green dark:text-emerald-400">
-                        AP
-                    </div>
+                    <img 
+                        src="/logo.png" 
+                        alt="Aura Park Logo" 
+                        className="h-9 w-auto object-contain"
+                    />
                     <span className="text-xs font-bold tracking-tight text-neutral-900 dark:text-white group-hover:text-primary-600 transition-colors">
                         Aura Park
                     </span>

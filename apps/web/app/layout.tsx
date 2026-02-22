@@ -12,7 +12,7 @@ export const metadata = {
   title: 'Aura Park | Premium Transport Experience',
   description: 'Experience seamless inter-city travel with real-time tracking, instant booking, and premium comfort.',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/favicon.png',
   },
 };
 
