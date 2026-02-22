@@ -13,6 +13,7 @@ export default function Navbar() {
     const { user, loading, setUser } = useAuth();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isDark, setIsDark] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -20,6 +21,20 @@ export default function Navbar() {
         const handleScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const checkDarkMode = () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            setIsDark(isDarkMode);
+        };
+        
+        checkDarkMode();
+        
+        const observer = new MutationObserver(checkDarkMode);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        
+        return () => observer.disconnect();
     }, []);
 
     const handleLogout = async () => {
@@ -79,7 +94,7 @@ export default function Navbar() {
                     {/* Logo & Platform ID */}
                 <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
                     <img 
-                        src="/logo.png" 
+                        src={isDark ? "/logo-white.png" : "/logo-black.png"}
                         alt="Aura Park Logo" 
                         className="h-9 w-auto object-contain"
                     />

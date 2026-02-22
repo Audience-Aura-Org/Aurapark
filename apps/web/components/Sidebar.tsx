@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from './AuthProvider';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 interface NavItem {
     label: string;
@@ -273,6 +274,21 @@ export function Sidebar() {
     const pathname = usePathname();
     const { isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen } = useSidebar();
     const { user, loading } = useAuth();
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const checkDarkMode = () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            setIsDark(isDarkMode);
+        };
+        
+        checkDarkMode();
+        
+        const observer = new MutationObserver(checkDarkMode);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        
+        return () => observer.disconnect();
+    }, []);
 
     // Filter nav items based on user role
     const filteredNavItems = navItems.filter(item =>
@@ -305,7 +321,7 @@ export function Sidebar() {
                 <div className="h-20 flex items-center px-4 border-b border-neutral-50 overflow-hidden">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 shrink-0 flex items-center justify-center">
-                            <img src="/logo-black.png" alt="Aura Park" className="w-10 h-10 object-contain" />
+                            <img src={isDark ? "/logo-white.png" : "/logo-black.png"} alt="Aura Park" className="w-10 h-10 object-contain" />
                         </div>
                         {!isCollapsed && (
                             <div className="animate-in fade-in slide-in-from-left-2 duration-500">

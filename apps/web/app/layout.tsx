@@ -12,7 +12,7 @@ export const metadata = {
   title: 'Aura Park | Premium Transport Experience',
   description: 'Experience seamless inter-city travel with real-time tracking, instant booking, and premium comfort.',
   icons: {
-    icon: '/favicon.png',
+    icon: '/logo-white.png',
   },
 };
 
@@ -38,6 +38,12 @@ export default function RootLayout({
                 const theme = localStorage.getItem('theme') || 'system';
                 const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
                 if (isDark) document.documentElement.classList.add('dark');
+                
+                // Set favicon based on theme
+                const favicon = document.querySelector('link[rel="icon"]');
+                if (favicon) {
+                  favicon.href = isDark ? '/logo-white.png' : '/logo-black.png';
+                }
               } catch (e) {}
             `,
           }}
