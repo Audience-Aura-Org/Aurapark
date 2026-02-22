@@ -108,18 +108,18 @@ const config: Config = {
                 display: ['Poppins', 'sans-serif']
             },
             fontSize: {
-                'xs': ['12px', { lineHeight: '16px', fontWeight: '500' }],
-                'sm': ['14px', { lineHeight: '20px', fontWeight: '500' }],
-                'base': ['16px', { lineHeight: '24px', fontWeight: '500' }],
-                'lg': ['18px', { lineHeight: '28px', fontWeight: '600' }],
-                'xl': ['20px', { lineHeight: '28px', fontWeight: '600' }],
-                '2xl': ['24px', { lineHeight: '32px', fontWeight: '700' }],
-                '3xl': ['30px', { lineHeight: '36px', fontWeight: '700' }],
-                '4xl': ['36px', { lineHeight: '40px', fontWeight: '800' }],
-                '5xl': ['48px', { lineHeight: '1', fontWeight: '800' }],
-                '6xl': ['60px', { lineHeight: '1', fontWeight: '900' }],
-                '7xl': ['72px', { lineHeight: '1', fontWeight: '900' }],
-                '8xl': ['96px', { lineHeight: '1', fontWeight: '900' }]
+                'xs': ['11px', { lineHeight: '16px', fontWeight: '500' }],
+                'sm': ['12px', { lineHeight: '18px', fontWeight: '500' }],
+                'base': ['14px', { lineHeight: '21px', fontWeight: '500' }],
+                'lg': ['16px', { lineHeight: '24px', fontWeight: '600' }],
+                'xl': ['18px', { lineHeight: '26px', fontWeight: '600' }],
+                '2xl': ['21px', { lineHeight: '28px', fontWeight: '700' }],
+                '3xl': ['26px', { lineHeight: '32px', fontWeight: '700' }],
+                '4xl': ['32px', { lineHeight: '36px', fontWeight: '800' }],
+                '5xl': ['42px', { lineHeight: '1', fontWeight: '800' }],
+                '6xl': ['52px', { lineHeight: '1', fontWeight: '900' }],
+                '7xl': ['63px', { lineHeight: '1', fontWeight: '900' }],
+                '8xl': ['84px', { lineHeight: '1', fontWeight: '900' }]
             },
             borderRadius: {
                 'xl': '16px',
